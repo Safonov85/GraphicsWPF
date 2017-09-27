@@ -6,15 +6,19 @@
         xmlns:local="clr-namespace:WPF3Dgraphics"
         xmlns:helix="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="500" Loaded="Window_Loaded">
+        Title="MainWindow" Height="714" Width="519" Loaded="Window_Loaded">
     <Grid>
-        <Button x:Name="LoadButton" Margin="0,0,0,444" Click="LoadButton_Click">Load</Button>
-        <Button x:Name="LoadButton2" Margin="0,25,0,419" Click="LoadButton2_Click">Load dif</Button>
-        <Canvas x:Name="Canvas1" HorizontalAlignment="Left" Height="469" VerticalAlignment="Top" Width="492"/>
-        <!--<helix:HelixViewport3D x:Name="viewPort3d" ZoomExtentsWhenLoaded="true" Grid.RowSpan="2" >
-             
+        <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
+        <Button x:Name="LoadButton2" Margin="0,34,0,621" Click="LoadButton2_Click">Load dif</Button>
+        <Border BorderBrush="Black" BorderThickness="2">
+        <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
+                HorizontalAlignment="Left" Height="469"
+                VerticalAlignment="Top" Width="492" Margin="7,113,0,0"
+                Background="LightBlue"/>
+        <!--<helix:HelixViewport3D x:Name="viewPort3d"
+            ZoomExtentsWhenLoaded="true" Grid.RowSpan="2" >
             <helix:DefaultLights/>
         </helix:HelixViewport3D>-->
-
+        </Border>
     </Grid>
 </Window>
