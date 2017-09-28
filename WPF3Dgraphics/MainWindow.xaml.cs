@@ -31,6 +31,7 @@ namespace WPF3Dgraphics
 		RotateTransform3D Rotate;
 		TranslateTransform3D Position;
 		Line myLine;
+		double rotationCubeX = 0;
 
 
 		ModelImporter import = new ModelImporter();
@@ -122,8 +123,8 @@ namespace WPF3Dgraphics
 			myLine.Stroke = System.Windows.Media.Brushes.Black;
 			myLine.X1 = 1;
 			myLine.Y1 = 1;
-			myLine.X2 = 250;
-			myLine.Y2 = 250;
+			myLine.X2 = 500;
+			myLine.Y2 = 3;
 			myLine.HorizontalAlignment = HorizontalAlignment.Left;
 			myLine.VerticalAlignment = VerticalAlignment.Center;
 			myLine.StrokeThickness = 3;
@@ -160,7 +161,7 @@ namespace WPF3Dgraphics
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 
-			myLine.X2 = 200;
+			
 			
 			//Canvas.SetTop(myViewport, 0);
 			//Canvas.SetLeft(myViewport, 0);
@@ -183,24 +184,43 @@ namespace WPF3Dgraphics
 
 		private void LoadButton2_Click(object sender, RoutedEventArgs e)
 		{
-			RotateCubeAnimation();
+			//RotateCubeAnimation();
+			MoveObject();
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			MoveObject();
+			//MoveObject();
 			//MoveVertex();
-			//RotateObject();
+			RotateObject();
 		}
 
 		void RotateObject()
 		{
-			RotateTransform3D myRotateTransform = new RotateTransform3D(new AxisAngleRotation3D(
-				new Vector3D(0, 0, 1), 220));
-			Cube1.Transform = myRotateTransform;
+			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
+			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
+			myAxisAngleRotation3d.Axis = new Vector3D(3, 0, 0);
+			myAxisAngleRotation3d.Angle = rotationCubeX + 5;
+			rotationCubeX = myAxisAngleRotation3d.Angle;
+			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
+
+			// Add the rotation transform to a Transform3DGroup
+			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
+			myTransform3DGroup.Children.Add(myRotateTransform3D);
+			Cube1.Transform = myTransform3DGroup;
+			//RotateTransform3D myRotateTransform = new RotateTransform3D();
+			//RotateTransform3D myRotateTransform = new RotateTransform3D(new AxisAngleRotation3D(
+			//	new Vector3D(0, 0, 1), 30));
+			//TranslateTransform3D newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
+			//myRotateTransform.CenterZ = 20;
+			//Cube1.Transform.Transform(new Point3D(3, 5, 2));
+			//Cube1.Transform = newPosition;
+			//Cube1.Transform = myRotateTransform;
 			//Cube1.Transform.Value.Rotate(new Quaternion(3, 4, 5, 5));
 
-			//System.Diagnostics.Debug.WriteLine(Cube1.Transform.Value.ToString());
+			System.Diagnostics.Debug.WriteLine(myRotateTransform3D.CenterX.ToString());
+			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterY.ToString());
+			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterZ.ToString());
 			//Cube1.Transform.Value.RotateAt(new Quaternion(3, 0, 0, 2), new Point3D(0, 3, 0));
 		}
 
