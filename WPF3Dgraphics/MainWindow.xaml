@@ -14,7 +14,7 @@
         <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
                 VerticalAlignment="Top" Width="492" Margin="7,113,0,0"
-                Background="LightBlue"/>
+                Background="LightBlue" MouseMove="Canvas1_MouseMove"/>
         <!--<helix:HelixViewport3D x:Name="viewPort3d"
             ZoomExtentsWhenLoaded="true" Grid.RowSpan="2" >
             <helix:DefaultLights/>

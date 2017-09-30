@@ -24,6 +24,12 @@ namespace WPF3Dgraphics
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		enum Angle
+		{
+			AngleX,
+			AngleY,
+			AngleZ
+		}
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
@@ -31,6 +37,7 @@ namespace WPF3Dgraphics
 		RotateTransform3D Rotate;
 		TranslateTransform3D Position;
 		Line myLine;
+		Angle angle = Angle.AngleX;
 		double rotationCubeX = 0;
 
 
@@ -117,7 +124,7 @@ namespace WPF3Dgraphics
 			this.Canvas1.Children.Add(myViewport);
 			myViewport.Height = 500;
 			myViewport.Width = 500;
-
+			
 			
 			myLine = new Line();
 			myLine.Stroke = System.Windows.Media.Brushes.Black;
@@ -192,16 +199,34 @@ namespace WPF3Dgraphics
 		{
 			//MoveObject();
 			//MoveVertex();
-			RotateObject();
+			if(e.ChangedButton == 0) // Left mousebutton pressed
+			{
+				if(angle == Angle.AngleX)
+				{
+					RotateObject(Angle.AngleX);
+				}
+				else if(angle == Angle.AngleY)
+				{
+
+				}
+			}
 		}
 
-		void RotateObject()
+		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		void RotateObject(Angle angle)
 		{
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(3, 0, 0);
-			myAxisAngleRotation3d.Angle = rotationCubeX + 5;
-			rotationCubeX = myAxisAngleRotation3d.Angle;
+			myAxisAngleRotation3d.Axis = new Vector3D(200, 0, 0);
+			if(angle == Angle.AngleX)
+			{
+				myAxisAngleRotation3d.Angle = rotationCubeX + 5;
+				rotationCubeX = myAxisAngleRotation3d.Angle;
+			}
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
 			// Add the rotation transform to a Transform3DGroup
@@ -259,5 +284,7 @@ namespace WPF3Dgraphics
 			RotCube.Children.Add(RotAngle);
 			RotCube.Begin(Canvas1);
 		}
+
+		
 	}
 }
