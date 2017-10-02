@@ -39,6 +39,7 @@ namespace WPF3Dgraphics
 		Line myLine;
 		Angle angle = Angle.AngleX;
 		double rotationCubeX = 0;
+		double lastPosX = 0;
 
 
 		ModelImporter import = new ModelImporter();
@@ -201,20 +202,34 @@ namespace WPF3Dgraphics
 			//MoveVertex();
 			if(e.ChangedButton == 0) // Left mousebutton pressed
 			{
-				if(angle == Angle.AngleX)
-				{
-					RotateObject(Angle.AngleX);
-				}
-				else if(angle == Angle.AngleY)
-				{
 
-				}
 			}
 		}
 
 		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
 		{
+			if(e.LeftButton == MouseButtonState.Pressed)
+			{
+				
+				
+				//System.Diagnostics.Debug.WriteLine(point.X.ToString());
 
+				// X angle
+				if (angle == Angle.AngleX)
+				{
+					RotateObject(Angle.AngleX);
+				}
+				// Y angle
+				else if (angle == Angle.AngleY)
+				{
+					RotateObject(Angle.AngleY);
+				}
+				// Z angle
+				else if (angle == Angle.AngleZ)
+				{
+					RotateObject(Angle.AngleZ);
+				}
+			}
 		}
 
 		void RotateObject(Angle angle)
@@ -222,9 +237,11 @@ namespace WPF3Dgraphics
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
 			myAxisAngleRotation3d.Axis = new Vector3D(200, 0, 0);
-			if(angle == Angle.AngleX)
+			Point point = Mouse.GetPosition(Canvas1);
+
+			if (angle == Angle.AngleX)
 			{
-				myAxisAngleRotation3d.Angle = rotationCubeX + 5;
+				myAxisAngleRotation3d.Angle = rotationCubeX + (point.X - lastPosX);
 				rotationCubeX = myAxisAngleRotation3d.Angle;
 			}
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
@@ -243,10 +260,12 @@ namespace WPF3Dgraphics
 			//Cube1.Transform = myRotateTransform;
 			//Cube1.Transform.Value.Rotate(new Quaternion(3, 4, 5, 5));
 
-			System.Diagnostics.Debug.WriteLine(myRotateTransform3D.CenterX.ToString());
+			//System.Diagnostics.Debug.WriteLine(myRotateTransform3D.CenterX.ToString());
 			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterY.ToString());
 			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterZ.ToString());
 			//Cube1.Transform.Value.RotateAt(new Quaternion(3, 0, 0, 2), new Point3D(0, 3, 0));
+
+			lastPosX = point.X;
 		}
 
 		// Moving the WHOLE object
