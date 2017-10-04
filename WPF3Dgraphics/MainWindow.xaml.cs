@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
-using HelixToolkit.Wpf;
+//using HelixToolkit.Wpf;
 
 
 namespace WPF3Dgraphics
@@ -40,9 +40,10 @@ namespace WPF3Dgraphics
 		Angle angle = Angle.AngleX;
 		double rotationCubeX = 0;
 		double lastPosX = 0;
+		PerspectiveCamera Camera1 = new PerspectiveCamera();
 
 
-		ModelImporter import = new ModelImporter();
+		//ModelImporter import = new ModelImporter();
 
 		public MainWindow()
 		{
@@ -105,7 +106,7 @@ namespace WPF3Dgraphics
 			DirLight1.Color = Colors.White;
 			DirLight1.Direction = new Vector3D(-1, -1, -1);
 
-			PerspectiveCamera Camera1 = new PerspectiveCamera();
+			
 			Camera1.FarPlaneDistance = 30;
 			Camera1.NearPlaneDistance = 1;
 			Camera1.FieldOfView = 45;
@@ -200,9 +201,16 @@ namespace WPF3Dgraphics
 		{
 			//MoveObject();
 			//MoveVertex();
-			if(e.ChangedButton == 0) // Left mousebutton pressed
+			if(e.ChangedButton == MouseButton.Left) // Left mousebutton pressed
 			{
-
+				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+			}
+			else if (e.ChangedButton == MouseButton.Middle)
+			{
+				//Mouse.OverrideCursor = Cursor.
+				//this.Cursor = new Cursor(Cursor.Current.Handle);
+				//Cursor.Position = new Point(Cursor.Position.X - 50, Cursor.Position.Y - 50);
+				Camera1.LookDirection = new Vector3D(-2, -2, -4);
 			}
 		}
 
@@ -229,6 +237,17 @@ namespace WPF3Dgraphics
 				{
 					RotateObject(Angle.AngleZ);
 				}
+				
+
+	}
+		}
+
+		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Released)
+			{
+				//lastPosX = 0;
+				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 			}
 		}
 
