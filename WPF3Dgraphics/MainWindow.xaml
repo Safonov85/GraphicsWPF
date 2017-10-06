@@ -9,7 +9,8 @@
         Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded">
     <Grid>
         <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
-        <Button x:Name="LoadButton2" Margin="0,34,0,621" Click="LoadButton2_Click">Load dif</Button>
+        <Button x:Name="LoadButton2" Margin="0,34,374,621" Click="LoadButton2_Click">Move X +</Button>
+        <Button x:Name="LoadButton3" Margin="174,34,200,621" Click="LoadButton3_Click" Content="Move X -"/>
         <Border BorderBrush="Black" BorderThickness="2">
         <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
@@ -20,5 +21,6 @@
             <helix:DefaultLights/>
         </helix:HelixViewport3D>-->
         </Border>
+        
     </Grid>
 </Window>

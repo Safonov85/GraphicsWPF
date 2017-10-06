@@ -194,7 +194,12 @@ namespace WPF3Dgraphics
 		private void LoadButton2_Click(object sender, RoutedEventArgs e)
 		{
 			//RotateCubeAnimation();
-			MoveObject();
+			MoveObject("+");
+		}
+
+		private void LoadButton3_Click(object sender, RoutedEventArgs e)
+		{
+			MoveObject("-");
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
@@ -255,7 +260,7 @@ namespace WPF3Dgraphics
 		{
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(200, 0, 0);
+			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
 			Point point = Mouse.GetPosition(Canvas1);
 
 			if (angle == Angle.AngleX)
@@ -265,9 +270,14 @@ namespace WPF3Dgraphics
 			}
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
+			TranslateTransform3D newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX, 0, 0);
+
 			// Add the rotation transform to a Transform3DGroup
 			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
 			myTransform3DGroup.Children.Add(myRotateTransform3D);
+
+			// Adding current position (so it doesn't reset)
+			myTransform3DGroup.Children.Add(newPosition);
 			Cube1.Transform = myTransform3DGroup;
 			//RotateTransform3D myRotateTransform = new RotateTransform3D();
 			//RotateTransform3D myRotateTransform = new RotateTransform3D(new AxisAngleRotation3D(
@@ -288,11 +298,32 @@ namespace WPF3Dgraphics
 		}
 
 		// Moving the WHOLE object
-		void MoveObject()
+		void MoveObject(string direction)
 		{
-			TranslateTransform3D newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
+			TranslateTransform3D newPosition;
+			if (direction == "+")
+			{
+				newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
+			}
+			else
+			{
+				newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX - 0.1, 0, 0);
+			}
+			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
+			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
+			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
+			myAxisAngleRotation3d.Angle = rotationCubeX;
+			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
-			Cube1.Transform = newPosition;
+			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
+
+			// Adding current rotation
+			myTransform3DGroup.Children.Add(myRotateTransform3D);
+
+			// Adding current position
+			myTransform3DGroup.Children.Add(newPosition);
+
+			Cube1.Transform = myTransform3DGroup;
 		}
 
 		void MoveVertex()
