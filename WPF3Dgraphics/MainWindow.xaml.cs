@@ -40,6 +40,7 @@ namespace WPF3Dgraphics
 		Angle angle = Angle.AngleX;
 		double rotationCubeX = 0;
 		double lastPosX = 0;
+		double cameraX, cameraY, cameraZ;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
 
 
@@ -106,12 +107,14 @@ namespace WPF3Dgraphics
 			DirLight1.Color = Colors.White;
 			DirLight1.Direction = new Vector3D(-1, -1, -1);
 
-			
+			cameraX = -2;
+			cameraY = -2;
+			cameraZ = -3;
 			Camera1.FarPlaneDistance = 30;
 			Camera1.NearPlaneDistance = 1;
 			Camera1.FieldOfView = 45;
 			Camera1.Position = new Point3D(2, 2, 3);
-			Camera1.LookDirection = new Vector3D(-2, -2, -3);
+			Camera1.LookDirection = new Vector3D(cameraX, cameraY, cameraZ);
 			Camera1.UpDirection = new Vector3D(0, 1, 0);
 
 			Model3DGroup modelGroup = new Model3DGroup();
@@ -142,58 +145,25 @@ namespace WPF3Dgraphics
 			
 			// Anti-Aliasing OFF!!!!!!!!!!
 			RenderOptions.SetEdgeMode((DependencyObject)myViewport, EdgeMode.Aliased);
+
+			
 		}
 
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
 		{
-			//LoadMyModel();
 			CreateCube();
-		}
-
-		void LoadMyModel()
-		{
-			//ModelVisual3D device3D = new ModelVisual3D();
-			
-			//Model3DGroup group = import.Load("C:\\3D stuff\\Hospital Game\\OBJ\\Markus_01.obj");
-
-			//Model3D device = group;
-
-			//device3D.Content = device;
-
-			//viewPort3d.Children.Add(device3D);
 		}
 
 		void CreateCube()
 		{
 			MeshGeometry3D cubeMesh = MCube();
-			//cubeMesh.Normals = 0;
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-
 			
-			
-			//Canvas.SetTop(myViewport, 0);
-			//Canvas.SetLeft(myViewport, 0);
-			//this.Width = myViewport.Width;
-			//this.Height = myViewport.Height;
-
-			//Cube1.Transform = Rotate;
-
-			//RotAngle.From = 0;
-			//RotAngle.To = 360;
-			//RotAngle.Duration = new Duration(TimeSpan.FromSeconds(5.0));
-			//RotAngle.RepeatBehavior = RepeatBehavior.Forever;
-			//NameScope.SetNameScope(Canvas1, new NameScope());
-			//Canvas1.RegisterName("cubeaxis", axis);
-			//Storyboard.SetTargetName(RotAngle, "cubeaxis");
-			//Storyboard.SetTargetProperty(RotAngle, new PropertyPath(AxisAngleRotation3D.AngleProperty));
-			//RotCube.Children.Add(RotAngle);
-			//RotCube.Begin(Canvas1);
 		}
 
 		private void LoadButton2_Click(object sender, RoutedEventArgs e)
 		{
-			//RotateCubeAnimation();
 			MoveObject("+");
 		}
 
@@ -204,18 +174,13 @@ namespace WPF3Dgraphics
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			//MoveObject();
-			//MoveVertex();
 			if(e.ChangedButton == MouseButton.Left) // Left mousebutton pressed
 			{
 				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
 			}
 			else if (e.ChangedButton == MouseButton.Middle)
 			{
-				//Mouse.OverrideCursor = Cursor.
-				//this.Cursor = new Cursor(Cursor.Current.Handle);
-				//Cursor.Position = new Point(Cursor.Position.X - 50, Cursor.Position.Y - 50);
-				Camera1.LookDirection = new Vector3D(-2, -2, -4);
+
 			}
 		}
 
@@ -223,9 +188,6 @@ namespace WPF3Dgraphics
 		{
 			if(e.LeftButton == MouseButtonState.Pressed)
 			{
-				
-				
-				//System.Diagnostics.Debug.WriteLine(point.X.ToString());
 
 				// X angle
 				if (angle == Angle.AngleX)
@@ -244,7 +206,12 @@ namespace WPF3Dgraphics
 				}
 				
 
-	}
+			}
+			else if(e.MiddleButton == MouseButtonState.Pressed)
+			{
+				Point point = Mouse.GetPosition(Canvas1);
+				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
+			}
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -279,20 +246,6 @@ namespace WPF3Dgraphics
 			// Adding current position (so it doesn't reset)
 			myTransform3DGroup.Children.Add(newPosition);
 			Cube1.Transform = myTransform3DGroup;
-			//RotateTransform3D myRotateTransform = new RotateTransform3D();
-			//RotateTransform3D myRotateTransform = new RotateTransform3D(new AxisAngleRotation3D(
-			//	new Vector3D(0, 0, 1), 30));
-			//TranslateTransform3D newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
-			//myRotateTransform.CenterZ = 20;
-			//Cube1.Transform.Transform(new Point3D(3, 5, 2));
-			//Cube1.Transform = newPosition;
-			//Cube1.Transform = myRotateTransform;
-			//Cube1.Transform.Value.Rotate(new Quaternion(3, 4, 5, 5));
-
-			//System.Diagnostics.Debug.WriteLine(myRotateTransform3D.CenterX.ToString());
-			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterY.ToString());
-			//System.Diagnostics.Debug.WriteLine(myRotateTransform.CenterZ.ToString());
-			//Cube1.Transform.Value.RotateAt(new Quaternion(3, 0, 0, 2), new Point3D(0, 3, 0));
 
 			lastPosX = point.X;
 		}
@@ -353,7 +306,5 @@ namespace WPF3Dgraphics
 			RotCube.Children.Add(RotAngle);
 			RotCube.Begin(Canvas1);
 		}
-
-		
 	}
 }
