@@ -11,6 +11,9 @@
         <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
         <Button x:Name="LoadButton2" Margin="0,34,374,621" Click="LoadButton2_Click">Move X +</Button>
         <Button x:Name="LoadButton3" Margin="174,34,200,621" Click="LoadButton3_Click" Content="Move X -"/>
+        <Button x:Name="MoveButton" Margin="10,78,452,577" Click="MoveButton_Click" Content="Move"/>
+        <Button x:Name="RotateButton" Margin="88,78,374,577" Click="RotateButton_Click" Content="Rotate"/>
+        <Button x:Name="ScaleButton" Margin="165,78,297,577" Click="ScaleButton_Click" Content="Scale"/>
         <Border BorderBrush="Black" BorderThickness="2">
         <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
@@ -22,5 +25,7 @@
         </helix:HelixViewport3D>-->
         </Border>
         
+
+
     </Grid>
 </Window>

@@ -30,6 +30,13 @@ namespace WPF3Dgraphics
 			AngleY,
 			AngleZ
 		}
+
+		enum Constraints
+		{
+			Position,
+			Rotation,
+			Scale
+		}
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
@@ -38,11 +45,11 @@ namespace WPF3Dgraphics
 		TranslateTransform3D Position;
 		Line myLine;
 		Angle angle = Angle.AngleX;
-		double rotationCubeX = 0;
+		Constraints constraints = Constraints.Position;
+		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
 		double lastPosX = 0;
 		double cameraX, cameraY, cameraZ;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
-
 
 		//ModelImporter import = new ModelImporter();
 
@@ -93,7 +100,6 @@ namespace WPF3Dgraphics
 				Triangles.Add(index);
 			}
 			cube.TriangleIndices = Triangles;
-
 
 			return cube;
 		}
@@ -146,7 +152,7 @@ namespace WPF3Dgraphics
 			// Anti-Aliasing OFF!!!!!!!!!!
 			RenderOptions.SetEdgeMode((DependencyObject)myViewport, EdgeMode.Aliased);
 
-			
+			MoveButton.Background = Brushes.Coral;
 		}
 
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -159,17 +165,19 @@ namespace WPF3Dgraphics
 			MeshGeometry3D cubeMesh = MCube();
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-			
+
+			myLine.X2 = Cube1.Transform.Value.OffsetX;
+			myLine.Y2 = Cube1.Transform.Value.OffsetY;
 		}
 
 		private void LoadButton2_Click(object sender, RoutedEventArgs e)
 		{
-			MoveObject("+");
+			MoveObject();
 		}
 
 		private void LoadButton3_Click(object sender, RoutedEventArgs e)
 		{
-			MoveObject("-");
+			MoveObject();
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
@@ -188,24 +196,32 @@ namespace WPF3Dgraphics
 		{
 			if(e.LeftButton == MouseButtonState.Pressed)
 			{
+				if(constraints == Constraints.Position)
+				{
+					MoveObject();
+				}
+				else if(constraints == Constraints.Rotation)
+				{
+					// X angle
+					if (angle == Angle.AngleX)
+					{
+						RotateObject(Angle.AngleX);
+					}
+					// Y angle
+					else if (angle == Angle.AngleY)
+					{
+						RotateObject(Angle.AngleY);
+					}
+					// Z angle
+					else if (angle == Angle.AngleZ)
+					{
+						RotateObject(Angle.AngleZ);
+					}
+				}
+				else if(constraints == Constraints.Scale)
+				{
 
-				// X angle
-				if (angle == Angle.AngleX)
-				{
-					RotateObject(Angle.AngleX);
 				}
-				// Y angle
-				else if (angle == Angle.AngleY)
-				{
-					RotateObject(Angle.AngleY);
-				}
-				// Z angle
-				else if (angle == Angle.AngleZ)
-				{
-					RotateObject(Angle.AngleZ);
-				}
-				
-
 			}
 			else if(e.MiddleButton == MouseButtonState.Pressed)
 			{
@@ -218,9 +234,32 @@ namespace WPF3Dgraphics
 		{
 			if (e.LeftButton == MouseButtonState.Released)
 			{
-				//lastPosX = 0;
 				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 			}
+		}
+
+		private void MoveButton_Click(object sender, RoutedEventArgs e)
+		{
+			MoveButton.Background = Brushes.Coral;
+			RotateButton.Background = Brushes.Gray;
+			ScaleButton.Background = Brushes.Gray;
+			constraints = Constraints.Position;
+		}
+
+		private void RotateButton_Click(object sender, RoutedEventArgs e)
+		{
+			MoveButton.Background = Brushes.Gray;
+			RotateButton.Background = Brushes.Coral;
+			ScaleButton.Background = Brushes.Gray;
+			constraints = Constraints.Rotation;
+		}
+
+		private void ScaleButton_Click(object sender, RoutedEventArgs e)
+		{
+			MoveButton.Background = Brushes.Gray;
+			RotateButton.Background = Brushes.Gray;
+			ScaleButton.Background = Brushes.Coral;
+			constraints = Constraints.Scale;
 		}
 
 		void RotateObject(Angle angle)
@@ -237,7 +276,8 @@ namespace WPF3Dgraphics
 			}
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
-			TranslateTransform3D newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX, 0, 0);
+			TranslateTransform3D newPosition =
+				new TranslateTransform3D(Cube1.Transform.Value.OffsetX, Cube1.Transform.Value.OffsetY, Cube1.Transform.Value.OffsetZ);
 
 			// Add the rotation transform to a Transform3DGroup
 			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
@@ -251,17 +291,23 @@ namespace WPF3Dgraphics
 		}
 
 		// Moving the WHOLE object
-		void MoveObject(string direction)
+		void MoveObject()
 		{
 			TranslateTransform3D newPosition;
-			if (direction == "+")
-			{
-				newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
-			}
-			else
-			{
-				newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX - 0.1, 0, 0);
-			}
+			Point point = Mouse.GetPosition(Canvas1);
+
+			
+			newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
+			
+
+			//if (direction == "+")
+			//{
+			//	newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
+			//}
+			//else
+			//{
+			//	newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX - 0.1, 0, 0);
+			//}
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
 			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
