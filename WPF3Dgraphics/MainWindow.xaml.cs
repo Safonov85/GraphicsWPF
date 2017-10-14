@@ -41,6 +41,7 @@ namespace WPF3Dgraphics
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
 		GeometryModel3D Cube1 = new GeometryModel3D();
+		Viewport3D myViewport = new Viewport3D();
 		RotateTransform3D Rotate;
 		TranslateTransform3D Position;
 		Line myLine;
@@ -49,6 +50,7 @@ namespace WPF3Dgraphics
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
 		double lastPosX = 0;
 		double cameraX, cameraY, cameraZ;
+		double vertexX, vertexY;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
 
 		//ModelImporter import = new ModelImporter();
@@ -112,6 +114,7 @@ namespace WPF3Dgraphics
 			DirectionalLight DirLight1 = new DirectionalLight();
 			DirLight1.Color = Colors.White;
 			DirLight1.Direction = new Vector3D(-1, -1, -1);
+			
 
 			cameraX = -2;
 			cameraY = -2;
@@ -129,7 +132,7 @@ namespace WPF3Dgraphics
 			ModelVisual3D modelsVisual = new ModelVisual3D();
 			modelsVisual.Content = modelGroup;
 
-			Viewport3D myViewport = new Viewport3D();
+			
 			myViewport.Camera = Camera1;
 			myViewport.Children.Add(modelsVisual);
 			this.Canvas1.Children.Add(myViewport);
@@ -220,7 +223,7 @@ namespace WPF3Dgraphics
 				}
 				else if(constraints == Constraints.Scale)
 				{
-
+					ScaleObject();
 				}
 			}
 			else if(e.MiddleButton == MouseButtonState.Pressed)
@@ -262,6 +265,17 @@ namespace WPF3Dgraphics
 			constraints = Constraints.Scale;
 		}
 
+		void ScaleObject()
+		{
+			ScaleTransform3D scale = new ScaleTransform3D();
+			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
+
+			scale.CenterX = 5;
+			myTransform3DGroup.Children.Add(scale);
+			Cube1.Transform = myTransform3DGroup;
+
+		}
+
 		void RotateObject(Angle angle)
 		{
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
@@ -286,6 +300,9 @@ namespace WPF3Dgraphics
 			// Adding current position (so it doesn't reset)
 			myTransform3DGroup.Children.Add(newPosition);
 			Cube1.Transform = myTransform3DGroup;
+
+			//vertexX = myViewport.ActualWidth * (1 - vertexX);
+			//myLine.X2 = vertexX;
 
 			lastPosX = point.X;
 		}
