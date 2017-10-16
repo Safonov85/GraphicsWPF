@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
+using Petzold.Media3D;
 //using HelixToolkit.Wpf;
 
 
@@ -42,9 +45,11 @@ namespace WPF3Dgraphics
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
 		GeometryModel3D Cube1 = new GeometryModel3D();
 		Viewport3D myViewport = new Viewport3D();
+		Model3DGroup modelGroup = new Model3DGroup();
 		RotateTransform3D Rotate;
 		TranslateTransform3D Position;
 		Line myLine;
+		Line myLine2;
 		Angle angle = Angle.AngleX;
 		Constraints constraints = Constraints.Position;
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
@@ -111,10 +116,25 @@ namespace WPF3Dgraphics
 		{
 			Rotate = new RotateTransform3D(axis);
 
-			DirectionalLight DirLight1 = new DirectionalLight();
+			//DirectionalLight DirLight1 = new DirectionalLight();
+			//DirLight1.Color = Colors.White;
+			//DirLight1.Direction = new Vector3D(-1, -1, -1);
+
+			//SpotLight DirLight1 = new SpotLight();
+			//DirLight1.Color = Colors.White;
+			//DirLight1.Direction = new Vector3D(0, 0, 0);
+			//DirLight1.InnerConeAngle = 0;
+			//DirLight1.OuterConeAngle = 50;
+			//DirLight1.Position = new Point3D(5, -5, 5);
+
+			PointLight DirLight1 = new PointLight();
 			DirLight1.Color = Colors.White;
-			DirLight1.Direction = new Vector3D(-1, -1, -1);
-			
+			DirLight1.Position = new Point3D(5, 5, 5);
+
+			PointLight DirLight2 = new PointLight();
+			DirLight2.Color = Colors.White;
+			DirLight2.Position = new Point3D(5, -5, 5);
+
 
 			cameraX = -2;
 			cameraY = -2;
@@ -126,9 +146,11 @@ namespace WPF3Dgraphics
 			Camera1.LookDirection = new Vector3D(cameraX, cameraY, cameraZ);
 			Camera1.UpDirection = new Vector3D(0, 1, 0);
 
-			Model3DGroup modelGroup = new Model3DGroup();
+			
 			modelGroup.Children.Add(Cube1);
 			modelGroup.Children.Add(DirLight1);
+			modelGroup.Children.Add(DirLight2);
+			
 			ModelVisual3D modelsVisual = new ModelVisual3D();
 			modelsVisual.Content = modelGroup;
 
@@ -141,19 +163,35 @@ namespace WPF3Dgraphics
 			
 			
 			myLine = new Line();
-			myLine.Stroke = System.Windows.Media.Brushes.Black;
+			
+			myLine.Stroke = System.Windows.Media.Brushes.White;
 			myLine.X1 = 1;
 			myLine.Y1 = 1;
-			myLine.X2 = 500;
-			myLine.Y2 = 3;
+			myLine.X2 = 100;
+			myLine.Y2 = 100;
 			myLine.HorizontalAlignment = HorizontalAlignment.Left;
 			myLine.VerticalAlignment = VerticalAlignment.Center;
-			myLine.StrokeThickness = 3;
-			
+			myLine.StrokeThickness = 1;
+
+			myLine2 = new Line();
+				  
+			myLine2.Stroke = System.Windows.Media.Brushes.White;
+			myLine2.X1 = 1;
+			myLine2.Y1 = 1;
+			myLine2.X2 = 100;
+			myLine2.Y2 = 100;
+			myLine2.HorizontalAlignment = HorizontalAlignment.Left;
+			myLine2.VerticalAlignment = VerticalAlignment.Center;
+			myLine2.StrokeThickness = 1;
+
 			Canvas1.Children.Add(myLine);
+			Canvas1.Children.Add(myLine2);
 			
-			// Anti-Aliasing OFF!!!!!!!!!!
+			// Anti-Aliasing OFF!!!!!!!!!! FOR 3D 
 			RenderOptions.SetEdgeMode((DependencyObject)myViewport, EdgeMode.Aliased);
+
+			// Anti-Aliasing OFF!!!!!!!!!! FOR 2D 
+			RenderOptions.SetEdgeMode(Canvas1, EdgeMode.Aliased);
 
 			MoveButton.Background = Brushes.Coral;
 		}
@@ -169,8 +207,8 @@ namespace WPF3Dgraphics
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 
-			myLine.X2 = Cube1.Transform.Value.OffsetX;
-			myLine.Y2 = Cube1.Transform.Value.OffsetY;
+			//Thread.Sleep(1000);
+			//modelGroup.Children.RemoveAt(0);
 		}
 
 		private void LoadButton2_Click(object sender, RoutedEventArgs e)
@@ -189,7 +227,7 @@ namespace WPF3Dgraphics
 			{
 				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
 			}
-			else if (e.ChangedButton == MouseButton.Middle)
+			else if (e.ChangedButton == MouseButton.Middle) // Middle mousebutton pressed
 			{
 
 			}
@@ -226,10 +264,27 @@ namespace WPF3Dgraphics
 					ScaleObject();
 				}
 			}
-			else if(e.MiddleButton == MouseButtonState.Pressed)
+			else if(e.MiddleButton == MouseButtonState.Pressed) // Middle mousebutton Pressed
 			{
 				Point point = Mouse.GetPosition(Canvas1);
 				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
+
+				MeshGeometry3D cubeMesh;
+				cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+
+				Debug.WriteLine(Cube1.Transform.Value.OffsetX);
+
+				myLine.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).X;
+				myLine.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).Y;
+
+				myLine.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
+				myLine.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
+
+				myLine2.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
+				myLine2.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
+
+				myLine2.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).X;
+				myLine2.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).Y;
 			}
 		}
 
@@ -291,7 +346,9 @@ namespace WPF3Dgraphics
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
 			TranslateTransform3D newPosition =
-				new TranslateTransform3D(Cube1.Transform.Value.OffsetX, Cube1.Transform.Value.OffsetY, Cube1.Transform.Value.OffsetZ);
+				new TranslateTransform3D(Cube1.Transform.Value.OffsetX,
+										Cube1.Transform.Value.OffsetY,
+										Cube1.Transform.Value.OffsetZ);
 
 			// Add the rotation transform to a Transform3DGroup
 			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
@@ -305,6 +362,14 @@ namespace WPF3Dgraphics
 			//myLine.X2 = vertexX;
 
 			lastPosX = point.X;
+
+			MeshGeometry3D cubeMesh;
+			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+			
+			Debug.WriteLine(Cube1.Transform.Value.OffsetX);
+
+			myLine.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[2]).X;
+			myLine.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[2]).Y;
 		}
 
 		// Moving the WHOLE object
