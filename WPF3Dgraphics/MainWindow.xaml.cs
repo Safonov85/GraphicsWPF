@@ -48,15 +48,22 @@ namespace WPF3Dgraphics
 		Model3DGroup modelGroup = new Model3DGroup();
 		RotateTransform3D Rotate;
 		TranslateTransform3D Position;
-		Line myLine;
-		Line myLine2;
+		List<Line> myLines = new List<Line>();
+		List<TextBlock> textBlocks = new List<TextBlock>();
 		Angle angle = Angle.AngleX;
 		Constraints constraints = Constraints.Position;
+		Int32[] indices2;
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
 		double lastPosX = 0;
 		double cameraX, cameraY, cameraZ;
 		double vertexX, vertexY;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
+
+		// The camera's current location.
+		private double CameraPhi = Math.PI / 6.0;       // 30 degrees
+		private double CameraTheta = Math.PI / 6.0;     // 30 degrees
+
+		private double CameraR = 13.0;
 
 		//ModelImporter import = new ModelImporter();
 
@@ -100,6 +107,8 @@ namespace WPF3Dgraphics
 						 2,7,3
 					  };
 
+			indices2 = indices;
+
 			Int32Collection Triangles =
 								  new Int32Collection();
 			foreach (Int32 index in indices)
@@ -107,6 +116,27 @@ namespace WPF3Dgraphics
 				Triangles.Add(index);
 			}
 			cube.TriangleIndices = Triangles;
+
+			for (int i = 0; i < cube.Positions.Count; i++)
+			{
+				TextBlock text = new TextBlock();
+				text.Text = i.ToString();
+				text.HorizontalAlignment = HorizontalAlignment.Center;
+				text.Background = Brushes.White;
+
+				textBlocks.Add(text);
+			}
+
+			for (int i = 0; i < indices.Length; i++)
+			{
+				Line line = new Line();
+				line.Stroke = System.Windows.Media.Brushes.White;
+				line.HorizontalAlignment = HorizontalAlignment.Left;
+				line.VerticalAlignment = VerticalAlignment.Center;
+				line.StrokeThickness = 1;
+
+				myLines.Add(line);
+			}
 
 			return cube;
 		}
@@ -161,31 +191,11 @@ namespace WPF3Dgraphics
 			myViewport.Height = 500;
 			myViewport.Width = 500;
 			
-			
-			myLine = new Line();
-			
-			myLine.Stroke = System.Windows.Media.Brushes.White;
-			myLine.X1 = 1;
-			myLine.Y1 = 1;
-			myLine.X2 = 100;
-			myLine.Y2 = 100;
-			myLine.HorizontalAlignment = HorizontalAlignment.Left;
-			myLine.VerticalAlignment = VerticalAlignment.Center;
-			myLine.StrokeThickness = 1;
 
-			myLine2 = new Line();
-				  
-			myLine2.Stroke = System.Windows.Media.Brushes.White;
-			myLine2.X1 = 1;
-			myLine2.Y1 = 1;
-			myLine2.X2 = 100;
-			myLine2.Y2 = 100;
-			myLine2.HorizontalAlignment = HorizontalAlignment.Left;
-			myLine2.VerticalAlignment = VerticalAlignment.Center;
-			myLine2.StrokeThickness = 1;
-
-			Canvas1.Children.Add(myLine);
-			Canvas1.Children.Add(myLine2);
+			//text.Text = "5";
+			//text.HorizontalAlignment = HorizontalAlignment.Center;
+			//text.Background = Brushes.White;
+			//Canvas1.Children.Add(text);
 			
 			// Anti-Aliasing OFF!!!!!!!!!! FOR 3D 
 			RenderOptions.SetEdgeMode((DependencyObject)myViewport, EdgeMode.Aliased);
@@ -207,6 +217,41 @@ namespace WPF3Dgraphics
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 
+			int i = 0;
+			foreach (var item in textBlocks)
+			{
+				Canvas1.Children.Add(item);
+
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+				};
+
+				i++;
+			}
+
+			i = 0;
+			int j = 1;
+			foreach (var item in myLines)
+			{
+				Canvas1.Children.Add(item);
+
+				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
+				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
+
+				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
+				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
+
+				if(j > myLines.Count -2)
+				{
+					break;
+				}
+
+				i++;
+				j++;
+			}
+
 			//Thread.Sleep(1000);
 			//modelGroup.Children.RemoveAt(0);
 		}
@@ -218,7 +263,8 @@ namespace WPF3Dgraphics
 
 		private void LoadButton3_Click(object sender, RoutedEventArgs e)
 		{
-			MoveObject();
+			//MoveObject();
+			MoveVertex();
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
@@ -268,23 +314,62 @@ namespace WPF3Dgraphics
 			{
 				Point point = Mouse.GetPosition(Canvas1);
 				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
-
+				//Camera1.UpDirection = new Vector3D(Camera1.UpDirection.X, Camera1.UpDirection.Y + 1, Camera1.UpDirection.Z +4);
+				
 				MeshGeometry3D cubeMesh;
 				cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 
-				Debug.WriteLine(Cube1.Transform.Value.OffsetX);
+				Debug.WriteLine(Camera1.UpDirection.Z);
 
-				myLine.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).X;
-				myLine.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).Y;
+				//text.RenderTransform = new TranslateTransform
+				//{
+				//	X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).X,
+				//	Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).Y
+				//};
 
-				myLine.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
-				myLine.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
 
-				myLine2.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
-				myLine2.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
+				//myLine.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).X;
+				//myLine.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[1]).Y;
 
-				myLine2.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).X;
-				myLine2.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).Y;
+				//myLine.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
+				//myLine.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
+
+				//myLine2.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X;
+				//myLine2.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y;
+
+				//myLine2.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).X;
+				//myLine2.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[3]).Y;
+
+				int i = 0;
+				foreach (var item in textBlocks)
+				{
+					item.RenderTransform = new TranslateTransform
+					{
+						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
+						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+					};
+
+					i++;
+				}
+
+				i = 0;
+				int j = 1;
+				foreach (var item in myLines)
+				{
+					item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
+					item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
+
+					item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
+					item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
+
+					if (j > myLines.Count - 2)
+					{
+						break;
+					}
+
+					i++;
+					j++;
+				}
 			}
 		}
 
@@ -318,6 +403,27 @@ namespace WPF3Dgraphics
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Coral;
 			constraints = Constraints.Scale;
+		}
+
+		private void Window_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Left)
+			{
+				Camera1.UpDirection = new Vector3D(4, 6, 7);
+
+				//// Calculate the camera's position in Cartesian coordinates.
+				//double y = CameraR * Math.Sin(CameraPhi);
+				//double hyp = CameraR * Math.Cos(CameraPhi);
+				//double x = hyp * Math.Cos(CameraTheta);
+				//double z = hyp * Math.Sin(CameraTheta);
+				//Camera1.Position = new Point3D(x, y, z);
+
+				//// Look toward the origin.
+				//Camera1.LookDirection = new Vector3D(-x, -y, -z);
+
+				//// Set the Up direction.
+				//Camera1.UpDirection = new Vector3D(0, 0, 0);
+			}
 		}
 
 		void ScaleObject()
@@ -367,9 +473,6 @@ namespace WPF3Dgraphics
 			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 			
 			Debug.WriteLine(Cube1.Transform.Value.OffsetX);
-
-			myLine.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[2]).X;
-			myLine.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[2]).Y;
 		}
 
 		// Moving the WHOLE object
@@ -417,6 +520,25 @@ namespace WPF3Dgraphics
 
 			// kinda unnecessary
 			Cube1.Geometry = cubeMesh;
+
+			i = 0;
+			int j = 1;
+			foreach (var item in myLines)
+			{
+				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
+				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
+
+				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
+				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
+
+				if (j > myLines.Count - 2)
+				{
+					break;
+				}
+
+				i++;
+				j++;
+			}
 		}
 
 		void RotateCubeAnimation()

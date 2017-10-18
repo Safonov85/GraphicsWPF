@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPF3Dgraphics"
         xmlns:helix="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded">
+        Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid>
         <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
         <Button x:Name="LoadButton2" Margin="0,34,374,621" Click="LoadButton2_Click">Move X +</Button>
