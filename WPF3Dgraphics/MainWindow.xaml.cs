@@ -126,8 +126,8 @@ namespace WPF3Dgraphics
 				Ellipse circle = new Ellipse();
 				circle.Stroke = System.Windows.Media.Brushes.Blue;
 				circle.Fill = System.Windows.Media.Brushes.Blue;
-				circle.Width = 5;
-				circle.Height = 5;
+				circle.Width = 20;
+				circle.Height = 20;
 
 				circles.Add(circle);
 			}
@@ -150,17 +150,6 @@ namespace WPF3Dgraphics
 								  RoutedEventArgs e)
 		{
 			Rotate = new RotateTransform3D(axis);
-
-			//DirectionalLight DirLight1 = new DirectionalLight();
-			//DirLight1.Color = Colors.White;
-			//DirLight1.Direction = new Vector3D(-1, -1, -1);
-
-			//SpotLight DirLight1 = new SpotLight();
-			//DirLight1.Color = Colors.White;
-			//DirLight1.Direction = new Vector3D(0, 0, 0);
-			//DirLight1.InnerConeAngle = 0;
-			//DirLight1.OuterConeAngle = 50;
-			//DirLight1.Position = new Point3D(5, -5, 5);
 
 			PointLight DirLight1 = new PointLight();
 			DirLight1.Color = Colors.White;
@@ -195,12 +184,6 @@ namespace WPF3Dgraphics
 			this.Canvas1.Children.Add(myViewport);
 			myViewport.Height = 500;
 			myViewport.Width = 500;
-			
-
-			//text.Text = "5";
-			//text.HorizontalAlignment = HorizontalAlignment.Center;
-			//text.Background = Brushes.White;
-			//Canvas1.Children.Add(text);
 			
 			// Anti-Aliasing OFF!!!!!!!!!! FOR 3D 
 			RenderOptions.SetEdgeMode((DependencyObject)myViewport, EdgeMode.Aliased);
@@ -243,8 +226,8 @@ namespace WPF3Dgraphics
 
 				item.RenderTransform = new TranslateTransform
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
 				};
 
 				i++;
@@ -358,18 +341,8 @@ namespace WPF3Dgraphics
 				i++;
 			}
 
-			i = 0;
-			foreach (var item in circles)
-			{
-				item.RenderTransform = new TranslateTransform
-				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
-				};
 
-				i++;
-			}
-
+			// WIREFRAME
 			i = 0;
 			int j = 1;
 			foreach (var item in myLines)
@@ -388,6 +361,25 @@ namespace WPF3Dgraphics
 				i++;
 				j++;
 			}
+
+
+			// Vertex DOTS
+			i = 0;
+			foreach (var item in circles)
+			{
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
+				};
+
+				i++;
+			}
+		}
+
+		void DetectDotVertex()
+		{
+
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
