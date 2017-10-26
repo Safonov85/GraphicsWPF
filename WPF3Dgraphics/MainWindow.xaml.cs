@@ -126,8 +126,8 @@ namespace WPF3Dgraphics
 				Ellipse circle = new Ellipse();
 				circle.Stroke = System.Windows.Media.Brushes.Blue;
 				circle.Fill = System.Windows.Media.Brushes.Blue;
-				circle.Width = 20;
-				circle.Height = 20;
+				circle.Width = 3;
+				circle.Height = 3;
 
 				circles.Add(circle);
 			}
@@ -219,6 +219,7 @@ namespace WPF3Dgraphics
 				i++;
 			}
 
+			// DOTS
 			i = 0;
 			foreach (var item in circles)
 			{
@@ -234,7 +235,7 @@ namespace WPF3Dgraphics
 			}
 
 
-
+			// WIREFRAME
 			i = 0;
 			int j = 1;
 			foreach (var item in myLines)
@@ -275,7 +276,21 @@ namespace WPF3Dgraphics
 		{
 			if(e.ChangedButton == MouseButton.Left) // Left mousebutton pressed
 			{
-				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+				//Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+				Point point = Mouse.GetPosition(Canvas1);
+				MeshGeometry3D cubeMesh;
+				cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+				circles[0].RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y - 2.5
+					
+					//DetectDotVertex(point.X, point.Y,
+				};
+
+				DetectDotVertex((int)point.X, (int)point.Y,
+					(int)circles[0].RenderTransform.Value.OffsetX, (int)circles[0].RenderTransform.Value.OffsetY);
+
 			}
 			else if (e.ChangedButton == MouseButton.Middle) // Middle mousebutton pressed
 			{
@@ -285,6 +300,7 @@ namespace WPF3Dgraphics
 
 		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
 		{
+			
 			if(e.LeftButton == MouseButtonState.Pressed)
 			{
 				if(constraints == Constraints.Position)
@@ -334,8 +350,8 @@ namespace WPF3Dgraphics
 			{
 				item.RenderTransform = new TranslateTransform
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X + 10,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y + 10
 				};
 
 				i++;
@@ -377,9 +393,14 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		void DetectDotVertex()
+		void DetectDotVertex(int xMousePos, int yMousePos, int xVert, int yVert)
 		{
-
+			if(xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
+			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
+			{
+				circles[0].Stroke = System.Windows.Media.Brushes.Red;
+				circles[0].Fill = System.Windows.Media.Brushes.Red;
+			}
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
