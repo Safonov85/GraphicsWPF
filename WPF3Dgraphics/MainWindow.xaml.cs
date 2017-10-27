@@ -38,7 +38,8 @@ namespace WPF3Dgraphics
 		{
 			Position,
 			Rotation,
-			Scale
+			Scale,
+			None
 		}
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
@@ -126,8 +127,8 @@ namespace WPF3Dgraphics
 				Ellipse circle = new Ellipse();
 				circle.Stroke = System.Windows.Media.Brushes.Blue;
 				circle.Fill = System.Windows.Media.Brushes.Blue;
-				circle.Width = 3;
-				circle.Height = 3;
+				circle.Width = 5;
+				circle.Height = 5;
 
 				circles.Add(circle);
 			}
@@ -212,8 +213,8 @@ namespace WPF3Dgraphics
 
 				item.RenderTransform = new TranslateTransform
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X + 10,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y + 10
 				};
 
 				i++;
@@ -277,19 +278,25 @@ namespace WPF3Dgraphics
 			if(e.ChangedButton == MouseButton.Left) // Left mousebutton pressed
 			{
 				//Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-				Point point = Mouse.GetPosition(Canvas1);
-				MeshGeometry3D cubeMesh;
-				cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-				circles[0].RenderTransform = new TranslateTransform
+				int i = 0;
+				foreach (var item in circles)
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).X - 2.5,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[0]).Y - 2.5
-					
-					//DetectDotVertex(point.X, point.Y,
-				};
+					Point point = Mouse.GetPosition(Canvas1);
+					MeshGeometry3D cubeMesh;
+					cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+					item.RenderTransform = new TranslateTransform
+					{
+						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
+						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
 
-				DetectDotVertex((int)point.X, (int)point.Y,
-					(int)circles[0].RenderTransform.Value.OffsetX, (int)circles[0].RenderTransform.Value.OffsetY);
+						//DetectDotVertex(point.X, point.Y,
+					};
+
+					DetectDotVertex((int)point.X, (int)point.Y,
+						(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY, i);
+					i++;
+				}
+				
 
 			}
 			else if (e.ChangedButton == MouseButton.Middle) // Middle mousebutton pressed
@@ -328,6 +335,10 @@ namespace WPF3Dgraphics
 				else if(constraints == Constraints.Scale)
 				{
 					ScaleObject();
+				}
+				else if(constraints == Constraints.None)
+				{
+
 				}
 			}
 			else if(e.MiddleButton == MouseButtonState.Pressed) // Middle mousebutton Pressed
@@ -393,13 +404,13 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		void DetectDotVertex(int xMousePos, int yMousePos, int xVert, int yVert)
+		void DetectDotVertex(int xMousePos, int yMousePos, int xVert, int yVert, int item)
 		{
 			if(xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
 			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
 			{
-				circles[0].Stroke = System.Windows.Media.Brushes.Red;
-				circles[0].Fill = System.Windows.Media.Brushes.Red;
+				circles[item].Stroke = System.Windows.Media.Brushes.Red;
+				circles[item].Fill = System.Windows.Media.Brushes.Red;
 			}
 		}
 
@@ -416,6 +427,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Coral;
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Gray;
+			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Position;
 		}
 
@@ -424,6 +436,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Gray;
 			RotateButton.Background = Brushes.Coral;
 			ScaleButton.Background = Brushes.Gray;
+			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Rotation;
 		}
 
@@ -432,7 +445,17 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Gray;
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Coral;
+			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Scale;
+		}
+
+		private void NoneButton_Click(object sender, RoutedEventArgs e)
+		{
+			MoveButton.Background = Brushes.Gray;
+			RotateButton.Background = Brushes.Gray;
+			ScaleButton.Background = Brushes.Gray;
+			NoneButton.Background = Brushes.Coral;
+			constraints = Constraints.None;
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)

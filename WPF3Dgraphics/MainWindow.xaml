@@ -14,6 +14,7 @@
         <Button x:Name="MoveButton" Margin="10,78,452,577" Click="MoveButton_Click" Content="Move"/>
         <Button x:Name="RotateButton" Margin="88,78,374,577" Click="RotateButton_Click" Content="Rotate"/>
         <Button x:Name="ScaleButton" Margin="165,78,297,577" Click="ScaleButton_Click" Content="Scale"/>
+        <Button x:Name="NoneButton" Margin="242,78,254,577" Click="NoneButton_Click" Content="None"/>
         <Border BorderBrush="Black" BorderThickness="2">
         <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
@@ -24,7 +25,7 @@
             <helix:DefaultLights/>
         </helix:HelixViewport3D>-->
         </Border>
-        
+
 
 
     </Grid>
