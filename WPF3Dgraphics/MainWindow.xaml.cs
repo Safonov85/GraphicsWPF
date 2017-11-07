@@ -39,6 +39,7 @@ namespace WPF3Dgraphics
 			Position,
 			Rotation,
 			Scale,
+			EditObject,
 			None
 		}
 		Storyboard RotCube = new Storyboard();
@@ -270,7 +271,7 @@ namespace WPF3Dgraphics
 		private void LoadButton3_Click(object sender, RoutedEventArgs e)
 		{
 			//MoveObject();
-			MoveVertex();
+			
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
@@ -335,6 +336,20 @@ namespace WPF3Dgraphics
 				else if(constraints == Constraints.Scale)
 				{
 					ScaleObject();
+				}
+				else if(constraints == Constraints.EditObject)
+				{
+					MeshGeometry3D cubeMesh;
+					cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+					int selected = 0;
+					while(selected < cubeMesh.Positions.Count)
+					{
+						if(circles[selected].Fill == System.Windows.Media.Brushes.Red)
+						{
+							MoveVertex(selected, 0, 0.01, 0);
+						}
+						selected++;
+					}
 				}
 				else if(constraints == Constraints.None)
 				{
@@ -409,8 +424,16 @@ namespace WPF3Dgraphics
 			if(xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
 			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
 			{
-				circles[item].Stroke = System.Windows.Media.Brushes.Red;
-				circles[item].Fill = System.Windows.Media.Brushes.Red;
+				if(circles[item].Fill != System.Windows.Media.Brushes.Red)
+				{
+					circles[item].Stroke = System.Windows.Media.Brushes.Red;
+					circles[item].Fill = System.Windows.Media.Brushes.Red;
+				}
+				else
+				{
+					circles[item].Stroke = System.Windows.Media.Brushes.Blue;
+					circles[item].Fill = System.Windows.Media.Brushes.Blue;
+				}
 			}
 		}
 
@@ -427,6 +450,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Coral;
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Gray;
+			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Position;
 		}
@@ -436,6 +460,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Gray;
 			RotateButton.Background = Brushes.Coral;
 			ScaleButton.Background = Brushes.Gray;
+			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Rotation;
 		}
@@ -445,8 +470,19 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Gray;
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Coral;
+			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Scale;
+		}
+
+		private void EditObjectButton_Click(object sender, RoutedEventArgs e)
+		{
+			MoveButton.Background = Brushes.Gray;
+			RotateButton.Background = Brushes.Gray;
+			ScaleButton.Background = Brushes.Gray;
+			EditObjectButton.Background = Brushes.Coral;
+			NoneButton.Background = Brushes.Gray;
+			constraints = Constraints.EditObject;
 		}
 
 		private void NoneButton_Click(object sender, RoutedEventArgs e)
@@ -454,6 +490,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Gray;
 			RotateButton.Background = Brushes.Gray;
 			ScaleButton.Background = Brushes.Gray;
+			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Coral;
 			constraints = Constraints.None;
 		}
@@ -462,7 +499,7 @@ namespace WPF3Dgraphics
 		{
 			if (e.Key == Key.Left)
 			{
-				Camera1.UpDirection = new Vector3D(4, 6, 7);
+				//Camera1.UpDirection = new Vector3D(4, 6, 7);
 			}
 		}
 
@@ -479,6 +516,8 @@ namespace WPF3Dgraphics
 
 			DrawWireFrame();
 		}
+
+
 
 		void ScaleObject()
 		{
@@ -564,23 +603,38 @@ namespace WPF3Dgraphics
 			Cube1.Transform = myTransform3DGroup;
 		}
 
-		void MoveVertex()
+		void MoveVertex(int vert, double x, double y, double z)
 		{
 			MeshGeometry3D cubeMesh;
 			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-			int i = 5;
 
-			cubeMesh.Positions[i] = new Point3D(cubeMesh.Positions[i].X, cubeMesh.Positions[i].Y + 0.1, cubeMesh.Positions[i].Z);
+			// Which direction to move in
+			cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
 
 			// kinda unnecessary
 			Cube1.Geometry = cubeMesh;
 
-			i = 0;
+			// Update Dots
+			vert = 0;
+			foreach (var item in circles)
+			{
+
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).Y - 2.5
+				};
+
+				vert++;
+			}
+
+			// Update Wireframe
+			vert = 0;
 			int j = 1;
 			foreach (var item in myLines)
 			{
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
+				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[vert]]).X;
+				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[vert]]).Y;
 
 				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
 				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
@@ -590,7 +644,7 @@ namespace WPF3Dgraphics
 					break;
 				}
 
-				i++;
+				vert++;
 				j++;
 			}
 		}
