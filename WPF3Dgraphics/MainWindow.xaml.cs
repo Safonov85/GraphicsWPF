@@ -293,8 +293,12 @@ namespace WPF3Dgraphics
 						//DetectDotVertex(point.X, point.Y,
 					};
 
-					DetectDotVertex((int)point.X, (int)point.Y,
-						(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY, i);
+					if(VertexPressed((int)point.X, (int)point.Y,
+						(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY))
+					{
+						DetectDotVertex(i, false); // bool if CTRL is pressed or not
+						break;
+					}
 					i++;
 				}
 				
@@ -419,12 +423,20 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		void DetectDotVertex(int xMousePos, int yMousePos, int xVert, int yVert, int item)
+		void DetectDotVertex(int item, bool ctrlPressed)
 		{
-			if(xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
-			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
+			// Clear all reds, MAKE BLUE
+			if (ctrlPressed == false)
 			{
-				if(circles[item].Fill != System.Windows.Media.Brushes.Red)
+				int i = 0;
+				while (i < circles.Count - 1)
+				{
+					circles[i].Stroke = System.Windows.Media.Brushes.Blue;
+					circles[i].Fill = System.Windows.Media.Brushes.Blue;
+					i++;
+				}
+			}
+				if (circles[item].Fill != System.Windows.Media.Brushes.Red)
 				{
 					circles[item].Stroke = System.Windows.Media.Brushes.Red;
 					circles[item].Fill = System.Windows.Media.Brushes.Red;
@@ -434,7 +446,18 @@ namespace WPF3Dgraphics
 					circles[item].Stroke = System.Windows.Media.Brushes.Blue;
 					circles[item].Fill = System.Windows.Media.Brushes.Blue;
 				}
+			
+		}
+
+		bool VertexPressed(int xMousePos, int yMousePos, int xVert, int yVert)
+		{
+			if (xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
+			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
+			{
+				return true;
 			}
+
+			return false;
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -573,6 +596,7 @@ namespace WPF3Dgraphics
 		{
 			TranslateTransform3D newPosition;
 			Point point = Mouse.GetPosition(Canvas1);
+
 
 			
 			newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
