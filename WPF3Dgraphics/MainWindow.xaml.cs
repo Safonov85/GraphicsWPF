@@ -361,7 +361,7 @@ namespace WPF3Dgraphics
 					{
 						if (circles[selected].Fill == System.Windows.Media.Brushes.Red)
 						{
-							MoveVertex(selected, 0, 0.01, 0);
+							MoveVertex(selected, true, false, false);
 						}
 						selected++;
 					}
@@ -654,18 +654,34 @@ namespace WPF3Dgraphics
 			Cube1.Transform = myTransform3DGroup;
 		}
 
-		void MoveVertex(int vert, double x, double y, double z)
+		void MoveVertex(int vert, bool x, bool y, bool z)
 		{
 			MeshGeometry3D cubeMesh;
 			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 
 			Point point = Mouse.GetPosition(Canvas1);
 
-			double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
+			
 
-			cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, 
-				finalY * 0.01, cubeMesh.Positions[vert].Z + z);
-			lastPosDotY = cubeMesh.Positions[vert].Y;
+			if(x == true)
+			{
+				double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
+				cubeMesh.Positions[vert] = new Point3D(finalX * 0.01,
+				cubeMesh.Positions[vert].Y, cubeMesh.Positions[vert].Z);
+				lastPosDotY = cubeMesh.Positions[vert].Y;
+			}
+			else if(y == true)
+			{
+				double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
+				cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X,
+				finalY * 0.01, cubeMesh.Positions[vert].Z);
+				lastPosDotY = cubeMesh.Positions[vert].Y;
+			}
+			else if(z == true)
+			{
+
+			}
+			
 
 			// Which direction to move in
 			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
