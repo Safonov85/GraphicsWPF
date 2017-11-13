@@ -9,19 +9,26 @@
         Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid>
         <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
-        <Button x:Name="LoadButton2" Margin="0,34,374,621" Click="LoadButton2_Click">Move X +</Button>
-        <Button x:Name="LoadButton3" Margin="174,34,200,621" Click="LoadButton3_Click" Content="Move X -"/>
-        <Button x:Name="MoveButton" Margin="10,78,452,577" Click="MoveButton_Click" Content="Move"/>
-        <Button x:Name="RotateButton" Margin="88,78,374,577" Click="RotateButton_Click" Content="Rotate"/>
-        <Button x:Name="ScaleButton" Margin="165,78,297,577" Click="ScaleButton_Click" Content="Scale"/>
-        <Button x:Name="NoneButton" Margin="313,78,183,577" Click="NoneButton_Click" Content="None"/>
-        <Button x:Name="EditObjectButton" Margin="242,78,226,577" Click="EditObjectButton_Click" Content="Edit"/>
+        <Button x:Name="MoveButton" Margin="10,34,452,621" Click="MoveButton_Click" Content="Move"/>
+        <Button x:Name="RotateButton" Margin="87,34,375,621" Click="RotateButton_Click" Content="Rotate"/>
+        <Button x:Name="ScaleButton" Margin="164,34,298,621" Click="ScaleButton_Click" Content="Scale"/>
+        <Button x:Name="EditObjectButton" Margin="241,34,227,621" Click="EditObjectButton_Click" Content="Edit"/>
+        <Button x:Name="NoneButton" Margin="312,34,165,621" Click="NoneButton_Click" Content="None"/>
+        <ComboBox x:Name="comboBox" Canvas.Left="1" Canvas.Top="-38" Margin="374,34,109,621" SelectedIndex="0">
+            <ComboBoxItem Content="X"/>
+            <ComboBoxItem Content="Y"/>
+            <ComboBoxItem Content="Z"/>
+        </ComboBox>
+        <Label x:Name="LabelCanvasX" Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,67,0,0"/>
+        <Label x:Name="LabelCanvasY" Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,88,0,0"/>
+
         <Border BorderBrush="Black" BorderThickness="2">
-        <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
+            <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
                 VerticalAlignment="Top" Width="492" Margin="7,113,0,0"
-                Background="LightBlue" MouseMove="Canvas1_MouseMove" MouseUp="Canvas1_MouseUp" MouseWheel="Canvas1_MouseWheel"/>
-        <!--<helix:HelixViewport3D x:Name="viewPort3d"
+                Background="LightBlue" MouseMove="Canvas1_MouseMove" MouseUp="Canvas1_MouseUp" MouseWheel="Canvas1_MouseWheel">
+            </Canvas>
+            <!--<helix:HelixViewport3D x:Name="viewPort3d"
             ZoomExtentsWhenLoaded="true" Grid.RowSpan="2" >
             <helix:DefaultLights/>
         </helix:HelixViewport3D>-->

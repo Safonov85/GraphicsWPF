@@ -59,6 +59,8 @@ namespace WPF3Dgraphics
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
 		double lastPosX = 0;
 		double lastPosDotY = 0;
+		double lastPosDotX = 0;
+		double lastPosDotZ = 0;
 		double cameraX, cameraY, cameraZ;
 		double vertexX, vertexY;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
@@ -270,50 +272,39 @@ namespace WPF3Dgraphics
 				i++;
 				j++;
 			}
-
-			//Thread.Sleep(1000);
-			//modelGroup.Children.RemoveAt(0);
-		}
-
-		private void LoadButton2_Click(object sender, RoutedEventArgs e)
-		{
-			MoveObject();
-		}
-
-		private void LoadButton3_Click(object sender, RoutedEventArgs e)
-		{
-			//MoveObject();
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
 		{
+			Point point = Mouse.GetPosition(Canvas1);
+
 			if (e.ChangedButton == MouseButton.Left) // Left mousebutton pressed
 			{
-				//Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-				int i = 0;
-				foreach (var item in circles)
+				if (constraints == Constraints.EditObject)
 				{
-					Point point = Mouse.GetPosition(Canvas1);
-					MeshGeometry3D cubeMesh;
-					cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-					item.RenderTransform = new TranslateTransform
+					int i = 0;
+					foreach (var item in circles)
 					{
-						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
-						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
+						
+						MeshGeometry3D cubeMesh;
+						cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+						item.RenderTransform = new TranslateTransform
+						{
+							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
+							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
 
-						//DetectDotVertex(point.X, point.Y,
-					};
+							//DetectDotVertex(point.X, point.Y,
+						};
 
-					if (VertexPressed((int)point.X, (int)point.Y,
-						(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY))
-					{
-						DetectDotVertex(i, false); // bool if CTRL is pressed or not
-						break;
+						if (VertexPressed((int)point.X, (int)point.Y,
+							(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY))
+						{
+							DetectDotVertex(i, false); // bool if CTRL is pressed or not
+							break;
+						}
+						i++;
 					}
-					i++;
 				}
-
-
 			}
 			else if (e.ChangedButton == MouseButton.Middle) // Middle mousebutton pressed
 			{
@@ -323,6 +314,9 @@ namespace WPF3Dgraphics
 
 		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
 		{
+			Point point = Mouse.GetPosition(Canvas1);
+			LabelCanvasX.Content = "X: " + point.X;
+			LabelCanvasY.Content = "Y: " + point.Y;
 
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
@@ -361,7 +355,18 @@ namespace WPF3Dgraphics
 					{
 						if (circles[selected].Fill == System.Windows.Media.Brushes.Red)
 						{
-							MoveVertex(selected, true, false, false);
+							if(comboBox.SelectedIndex == 0)
+							{
+								MoveVertex(selected, true, false, false);
+							}
+							else if(comboBox.SelectedIndex == 1)
+							{
+								MoveVertex(selected, false, true, false);
+							}
+							else if (comboBox.SelectedIndex == 2)
+							{
+								MoveVertex(selected, false, false, true);
+							}
 						}
 						selected++;
 					}
@@ -373,7 +378,6 @@ namespace WPF3Dgraphics
 			}
 			else if (e.MiddleButton == MouseButtonState.Pressed) // Middle mousebutton Pressed
 			{
-				Point point = Mouse.GetPosition(Canvas1);
 				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
 				//Camera1.UpDirection = new Vector3D(Camera1.UpDirection.X, Camera1.UpDirection.Y + 1, Camera1.UpDirection.Z +4);
 
@@ -391,8 +395,8 @@ namespace WPF3Dgraphics
 			{
 				item.RenderTransform = new TranslateTransform
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X + 10,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y + 10
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
 				};
 
 				i++;
@@ -522,17 +526,18 @@ namespace WPF3Dgraphics
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.EditObject;
 
-			if (constraints == Constraints.EditObject)
-			{
-				int item = 0;
-				while (item < circles.Count - 1)
-				{
-					circles[item].Stroke = System.Windows.Media.Brushes.Blue;
-					circles[item].Fill = System.Windows.Media.Brushes.Blue;
-					item++;
-				}
-			}
-			DrawWireFrame();
+			RefreshFrame(System.Windows.Media.Brushes.Blue, Constraints.EditObject);
+			//if (constraints == Constraints.EditObject)
+			//{
+			//	int item = 0;
+			//	while (item < circles.Count - 1)
+			//	{
+			//		circles[item].Stroke = System.Windows.Media.Brushes.Blue;
+			//		circles[item].Fill = System.Windows.Media.Brushes.Blue;
+			//		item++;
+			//	}
+			//}
+			//DrawWireFrame();
 		}
 
 		private void NoneButton_Click(object sender, RoutedEventArgs e)
@@ -543,6 +548,23 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Coral;
 			constraints = Constraints.None;
+
+			RefreshFrame(System.Windows.Media.Brushes.Transparent, Constraints.None);
+		}
+
+		void RefreshFrame(Brush brush, Constraints cons)
+		{
+			if (constraints == cons)
+			{
+				int item = 0;
+				while (item < circles.Count - 1)
+				{
+					circles[item].Stroke = brush;
+					circles[item].Fill = brush;
+					item++;
+				}
+			}
+			DrawWireFrame();
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -665,21 +687,33 @@ namespace WPF3Dgraphics
 
 			if(x == true)
 			{
-				double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
-				cubeMesh.Positions[vert] = new Point3D(finalX * 0.01,
-				cubeMesh.Positions[vert].Y, cubeMesh.Positions[vert].Z);
-				lastPosDotY = cubeMesh.Positions[vert].Y;
+				double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotX);
+
+				cubeMesh.Positions[vert] = new Point3D
+				(finalX * 0.01,
+				cubeMesh.Positions[vert].Y,
+				cubeMesh.Positions[vert].Z);
+				lastPosDotX = cubeMesh.Positions[vert].X;
 			}
 			else if(y == true)
 			{
 				double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
-				cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X,
-				finalY * 0.01, cubeMesh.Positions[vert].Z);
+
+				cubeMesh.Positions[vert] = new Point3D
+				(cubeMesh.Positions[vert].X,
+				finalY * 0.01,
+				cubeMesh.Positions[vert].Z);
 				lastPosDotY = cubeMesh.Positions[vert].Y;
 			}
 			else if(z == true)
 			{
+				double finalZ = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotZ);
 
+				cubeMesh.Positions[vert] = new Point3D
+				(cubeMesh.Positions[vert].X,
+				cubeMesh.Positions[vert].Y,
+				finalZ * 0.01);
+				lastPosDotZ = cubeMesh.Positions[vert].Z;
 			}
 			
 
@@ -703,6 +737,19 @@ namespace WPF3Dgraphics
 
 					vert++;
 				}
+			}
+
+			// Update Text Numbers
+			int i = 0;
+			foreach (var item in textBlocks)
+			{
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+				};
+
+				i++;
 			}
 
 			// Update Wireframe
