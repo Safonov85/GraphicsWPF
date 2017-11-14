@@ -17,14 +17,10 @@ using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
 using Petzold.Media3D;
-//using HelixToolkit.Wpf;
 
 
 namespace WPF3Dgraphics
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
 		enum Angle
@@ -224,26 +220,26 @@ namespace WPF3Dgraphics
 				i++;
 			}
 
-			
-				// DOTS
-				i = 0;
-				foreach (var item in circles)
+
+			// DOTS
+			i = 0;
+			foreach (var item in circles)
+			{
+				Canvas1.Children.Add(item);
+
+				item.RenderTransform = new TranslateTransform
 				{
-					Canvas1.Children.Add(item);
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
+				};
 
-					item.RenderTransform = new TranslateTransform
-					{
-						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
-						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
-					};
-
-					i++;
-				}
+				i++;
+			}
 
 			if (constraints == Constraints.EditObject)
 			{
 				int item = 0;
-				while(item < circles.Count - 1)
+				while (item < circles.Count - 1)
 				{
 					circles[item].Stroke = System.Windows.Media.Brushes.Blue;
 					circles[item].Fill = System.Windows.Media.Brushes.Blue;
@@ -285,7 +281,7 @@ namespace WPF3Dgraphics
 					int i = 0;
 					foreach (var item in circles)
 					{
-						
+
 						MeshGeometry3D cubeMesh;
 						cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 						item.RenderTransform = new TranslateTransform
@@ -355,11 +351,11 @@ namespace WPF3Dgraphics
 					{
 						if (circles[selected].Fill == System.Windows.Media.Brushes.Red)
 						{
-							if(comboBox.SelectedIndex == 0)
+							if (comboBox.SelectedIndex == 0)
 							{
 								MoveVertex(selected, true, false, false);
 							}
-							else if(comboBox.SelectedIndex == 1)
+							else if (comboBox.SelectedIndex == 1)
 							{
 								MoveVertex(selected, false, true, false);
 							}
@@ -495,6 +491,8 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Position;
+
+			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
 
 		private void RotateButton_Click(object sender, RoutedEventArgs e)
@@ -505,6 +503,8 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Rotation;
+
+			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
 
 		private void ScaleButton_Click(object sender, RoutedEventArgs e)
@@ -515,6 +515,8 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.Scale;
+
+			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
 
 		private void EditObjectButton_Click(object sender, RoutedEventArgs e)
@@ -526,18 +528,7 @@ namespace WPF3Dgraphics
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.EditObject;
 
-			RefreshFrame(System.Windows.Media.Brushes.Blue, Constraints.EditObject);
-			//if (constraints == Constraints.EditObject)
-			//{
-			//	int item = 0;
-			//	while (item < circles.Count - 1)
-			//	{
-			//		circles[item].Stroke = System.Windows.Media.Brushes.Blue;
-			//		circles[item].Fill = System.Windows.Media.Brushes.Blue;
-			//		item++;
-			//	}
-			//}
-			//DrawWireFrame();
+			RefreshFrame(System.Windows.Media.Brushes.Blue);
 		}
 
 		private void NoneButton_Click(object sender, RoutedEventArgs e)
@@ -549,21 +540,19 @@ namespace WPF3Dgraphics
 			NoneButton.Background = Brushes.Coral;
 			constraints = Constraints.None;
 
-			RefreshFrame(System.Windows.Media.Brushes.Transparent, Constraints.None);
+			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
 
-		void RefreshFrame(Brush brush, Constraints cons)
+		void RefreshFrame(Brush brush)
 		{
-			if (constraints == cons)
+			int item = 0;
+			while (item < circles.Count - 1)
 			{
-				int item = 0;
-				while (item < circles.Count - 1)
-				{
-					circles[item].Stroke = brush;
-					circles[item].Fill = brush;
-					item++;
-				}
+				circles[item].Stroke = brush;
+				circles[item].Fill = brush;
+				item++;
 			}
+
 			DrawWireFrame();
 		}
 
@@ -683,9 +672,9 @@ namespace WPF3Dgraphics
 
 			Point point = Mouse.GetPosition(Canvas1);
 
-			
 
-			if(x == true)
+
+			if (x == true)
 			{
 				double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotX);
 
@@ -695,7 +684,7 @@ namespace WPF3Dgraphics
 				cubeMesh.Positions[vert].Z);
 				lastPosDotX = cubeMesh.Positions[vert].X;
 			}
-			else if(y == true)
+			else if (y == true)
 			{
 				double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
 
@@ -705,7 +694,7 @@ namespace WPF3Dgraphics
 				cubeMesh.Positions[vert].Z);
 				lastPosDotY = cubeMesh.Positions[vert].Y;
 			}
-			else if(z == true)
+			else if (z == true)
 			{
 				double finalZ = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotZ);
 
@@ -715,7 +704,7 @@ namespace WPF3Dgraphics
 				finalZ * 0.01);
 				lastPosDotZ = cubeMesh.Positions[vert].Z;
 			}
-			
+
 
 			// Which direction to move in
 			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
