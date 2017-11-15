@@ -198,6 +198,7 @@ namespace WPF3Dgraphics
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
 		{
 			CreateCube();
+			LoadButton.Visibility = Visibility.Hidden;
 		}
 
 		void CreateCube()
@@ -578,7 +579,10 @@ namespace WPF3Dgraphics
 			DrawWireFrame();
 		}
 
+		private void SaveModelButton_Click(object sender, RoutedEventArgs e)
+		{
 
+		}
 
 		void ScaleObject()
 		{

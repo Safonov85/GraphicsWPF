@@ -29,5 +29,8 @@
                 Background="LightBlue" MouseMove="Canvas1_MouseMove" MouseUp="Canvas1_MouseUp" MouseWheel="Canvas1_MouseWheel">
             </Canvas>
         </Border>
+
+        <Button x:Name="SaveModelButton" Margin="10,609,433,22" Click="SaveModelButton_Click" Content="Save Model..."/>
+
     </Grid>
 </Window>
