@@ -201,6 +201,7 @@ namespace WPF3Dgraphics
 			LoadButton.Visibility = Visibility.Hidden;
 		}
 
+		// Only needs to be used once
 		void CreateCube()
 		{
 			MeshGeometry3D cubeMesh = MCube();
@@ -465,6 +466,7 @@ namespace WPF3Dgraphics
 
 		}
 
+		// Detecteing if the blue vertex is pressed outside it or inside it
 		bool VertexPressed(int xMousePos, int yMousePos, int xVert, int yVert)
 		{
 			if (xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
@@ -544,6 +546,7 @@ namespace WPF3Dgraphics
 			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
 
+		// Refreshing the frame to make sure new condition is met
 		void RefreshFrame(Brush brush)
 		{
 			int item = 0;
@@ -579,11 +582,13 @@ namespace WPF3Dgraphics
 			DrawWireFrame();
 		}
 
+
 		private void SaveModelButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			// W.I.P.
 		}
 
+		// W.I.P.
 		void ScaleObject()
 		{
 			ScaleTransform3D scale = new ScaleTransform3D();
@@ -595,6 +600,7 @@ namespace WPF3Dgraphics
 
 		}
 
+		// Rotating WHOLE object
 		void RotateObject(Angle angle)
 		{
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
@@ -633,25 +639,13 @@ namespace WPF3Dgraphics
 			Debug.WriteLine(Cube1.Transform.Value.OffsetX);
 		}
 
-		// Moving the WHOLE object
+		// Moving the WHOLE object, (Only x Position ATM)
 		void MoveObject()
 		{
 			TranslateTransform3D newPosition;
 			Point point = Mouse.GetPosition(Canvas1);
-
-
-
 			newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
-
-
-			//if (direction == "+")
-			//{
-			//	newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + 0.1, 0, 0);
-			//}
-			//else
-			//{
-			//	newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX - 0.1, 0, 0);
-			//}
+			
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
 			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
@@ -669,6 +663,7 @@ namespace WPF3Dgraphics
 			Cube1.Transform = myTransform3DGroup;
 		}
 
+		// Moving selected Vertex(red)
 		void MoveVertex(int vert, bool x, bool y, bool z)
 		{
 			MeshGeometry3D cubeMesh;
@@ -766,6 +761,7 @@ namespace WPF3Dgraphics
 			}
 		}
 
+		// Just for fun/test
 		void RotateCubeAnimation()
 		{
 			axis = new AxisAngleRotation3D(new Vector3D(1, 0, 1), 0);
