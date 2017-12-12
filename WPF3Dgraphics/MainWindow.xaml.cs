@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
 using Petzold.Media3D;
-
+using System.IO;
+using Microsoft.Win32;
 
 namespace WPF3Dgraphics
 {
@@ -582,10 +583,37 @@ namespace WPF3Dgraphics
 			DrawWireFrame();
 		}
 
-
-		private void SaveModelButton_Click(object sender, RoutedEventArgs e)
+		static async void WriteTextAsync(string text)
 		{
-			// W.I.P.
+			// Set a variable to the My Documents path.
+			string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+			// Write the text asynchronously to a new file named "WriteTextAsync.txt".
+			using (StreamWriter outputFile = new StreamWriter(mydocpath + @"\WriteTextAsync.txt"))
+			{
+				await outputFile.WriteAsync(text);
+			}
+		}
+
+		private async void SaveModelButton_Click(object sender, RoutedEventArgs e)
+		{
+			Stream myStream;
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+			saveFileDialog.Filter = "obj files (*.obj)|*.obj|All files (*.*)|*.*";
+			saveFileDialog.FilterIndex = 0;
+			saveFileDialog.RestoreDirectory = true;
+
+			if (saveFileDialog.ShowDialog() == true)
+			{
+				if ((myStream = saveFileDialog.OpenFile()) != null)
+				{
+					//System.IO.File.WriteAllLines(saveFileDialog.di)
+					WriteTextAsync("lala");
+					// Code to write the stream goes here.
+					myStream.Close();
+				}
+			}
 		}
 
 		// W.I.P.
