@@ -571,6 +571,7 @@ namespace WPF3Dgraphics
 
 		private void Canvas1_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
+			// Delta acts like a bool (even though it's an int) 
 			if (e.Delta == 120)
 			{
 				Camera1.FieldOfView -= 1;
@@ -609,7 +610,8 @@ namespace WPF3Dgraphics
 				if ((myStream = saveFileDialog.OpenFile()) != null)
 				{
 					//System.IO.File.WriteAllLines(saveFileDialog.di)
-					WriteTextAsync("lala");
+					WriteTextAsync("Testing write async method");
+					MessageBox.Show(saveFileDialog.Title);
 					// Code to write the stream goes here.
 					myStream.Close();
 				}
