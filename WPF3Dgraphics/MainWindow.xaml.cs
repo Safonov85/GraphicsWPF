@@ -611,11 +611,46 @@ namespace WPF3Dgraphics
 				{
 					//System.IO.File.WriteAllLines(saveFileDialog.di)
 					WriteTextAsync("Testing write async method");
-					MessageBox.Show(saveFileDialog.Title);
-					// Code to write the stream goes here.
 					myStream.Close();
+					CreateObjFile(saveFileDialog.FileName);
+					//for (int i = 0; i < 20; i++)
+					//{
+					//	File.AppendAllText(@saveFileDialog.FileName, "#" + "3ds Max Wavefront OBJ Exporter - (c)2017");
+					//}
+					// Code to write the stream goes here.
+					
 				}
 			}
+		}
+
+		void CreateObjFile(string filePath)
+		{
+			MeshGeometry3D cubeMesh;
+			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+			string[] objText = new string[]
+				{
+				"# 3ds Max Wavefront OBJ Exporter - (c)2017",
+				"# File Created: " + DateTime.Now.ToString(),
+				"",
+				"#",
+				"# object cube",
+				"#",
+				""
+				};
+
+			foreach(var line in objText)
+			{
+				File.AppendAllText(@filePath, line + Environment.NewLine);
+			}
+
+			// Vertices Positions Added to OBJ file
+			foreach (var point in cubeMesh.Positions)
+			{
+				File.AppendAllText(@filePath, "v  " + ((decimal)point.X).ToString("0.0000").Replace(',', '.'));
+				File.AppendAllText(@filePath, " " + point.Y.ToString("0.0000").Replace(',', '.'));
+				File.AppendAllText(@filePath, " " + point.Z.ToString("0.0000").Replace(',', '.') + Environment.NewLine);
+			}
+			File.AppendAllText(@filePath, "# " + cubeMesh.Positions.Count + " vertices" + Environment.NewLine);
 		}
 
 		// W.I.P.
