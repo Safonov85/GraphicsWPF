@@ -53,6 +53,7 @@ namespace WPF3Dgraphics
 		Angle angle = Angle.AngleX;
 		Constraints constraints = Constraints.Position;
 		Int32[] indices2;
+		List<string> faces = new List<string>();
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
 		double lastPosX = 0;
 		double lastPosDotY = 0;
@@ -113,6 +114,14 @@ namespace WPF3Dgraphics
 				Triangles.Add(index);
 			}
 			cube.TriangleIndices = Triangles;
+
+			// For OBJ faces
+			//for (int i = 0; i < 8; i++)
+			//{
+			//	faces.Add(indices[i].ToString() + " ");
+			//	faces[i] = faces[i] + indices[i + 1].ToString() + " ";
+			//	faces[i] = faces[i] + indices[i + 2].ToString();
+			//}
 
 			for (int i = 0; i < cube.Positions.Count; i++)
 			{
@@ -612,7 +621,9 @@ namespace WPF3Dgraphics
 					//System.IO.File.WriteAllLines(saveFileDialog.di)
 					WriteTextAsync("Testing write async method");
 					myStream.Close();
-					CreateObjFile(saveFileDialog.FileName);
+					ObjCreation obj = new ObjCreation();
+					obj.CreateObjFile(saveFileDialog.FileName, Cube1);
+					//CreateObjFile(saveFileDialog.FileName);
 					//for (int i = 0; i < 20; i++)
 					//{
 					//	File.AppendAllText(@saveFileDialog.FileName, "#" + "3ds Max Wavefront OBJ Exporter - (c)2017");
@@ -623,35 +634,35 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		void CreateObjFile(string filePath)
-		{
-			MeshGeometry3D cubeMesh;
-			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-			string[] objText = new string[]
-				{
-				"# 3ds Max Wavefront OBJ Exporter - (c)2017",
-				"# File Created: " + DateTime.Now.ToString(),
-				"",
-				"#",
-				"# object cube",
-				"#",
-				""
-				};
+		//void CreateObjFile(string filePath)
+		//{
+		//	MeshGeometry3D cubeMesh;
+		//	cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+		//	string[] objText = new string[]
+		//		{
+		//		"# 3ds Max Wavefront OBJ Exporter - (c)2017",
+		//		"# File Created: " + DateTime.Now.ToString(),
+		//		"",
+		//		"#",
+		//		"# object cube",
+		//		"#",
+		//		""
+		//		};
 
-			foreach(var line in objText)
-			{
-				File.AppendAllText(@filePath, line + Environment.NewLine);
-			}
+		//	foreach(var line in objText)
+		//	{
+		//		File.AppendAllText(@filePath, line + Environment.NewLine);
+		//	}
 
-			// Vertices Positions Added to OBJ file
-			foreach (var point in cubeMesh.Positions)
-			{
-				File.AppendAllText(@filePath, "v  " + ((decimal)point.X).ToString("0.0000").Replace(',', '.'));
-				File.AppendAllText(@filePath, " " + point.Y.ToString("0.0000").Replace(',', '.'));
-				File.AppendAllText(@filePath, " " + point.Z.ToString("0.0000").Replace(',', '.') + Environment.NewLine);
-			}
-			File.AppendAllText(@filePath, "# " + cubeMesh.Positions.Count + " vertices" + Environment.NewLine);
-		}
+		//	// Vertices Positions Added to OBJ file
+		//	foreach (var point in cubeMesh.Positions)
+		//	{
+		//		File.AppendAllText(@filePath, "v  " + ((decimal)point.X).ToString("0.0000").Replace(',', '.'));
+		//		File.AppendAllText(@filePath, " " + point.Y.ToString("0.0000").Replace(',', '.'));
+		//		File.AppendAllText(@filePath, " " + point.Z.ToString("0.0000").Replace(',', '.') + Environment.NewLine);
+		//	}
+		//	File.AppendAllText(@filePath, "# " + cubeMesh.Positions.Count + " vertices" + Environment.NewLine);
+		//}
 
 		// W.I.P.
 		void ScaleObject()
