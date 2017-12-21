@@ -41,11 +41,38 @@ namespace WPF3Dgraphics
 			File.AppendAllText(@filePath, "# " + cubeMesh.Positions.Count + " vertices" + Environment.NewLine + Environment.NewLine);
 
 			File.AppendAllText(@filePath, "g " + groupName + Environment.NewLine);
-
+			File.AppendAllText(@filePath, "f ");
+			int index = 0;
+			int i3 = 0;
+			int polygons = 0;
+			int triangles = 1;
 			foreach(var face in cubeMesh.TriangleIndices)
 			{
-				File.AppendAllText(@filePath, "f " + face);
+				i3++;
+				File.AppendAllText(@filePath, face.ToString() + " ");
+
+				if(index == cubeMesh.TriangleIndices.Count - 1)
+				{
+					break;
+				}
+				if(i3 > 2)
+				{
+					File.AppendAllText(@filePath, Environment.NewLine);
+					File.AppendAllText(@filePath, "f ");
+					i3 = 0;
+					triangles++;
+				}
+				index++;
 			}
+			File.AppendAllText(@filePath, Environment.NewLine);
+			File.AppendAllText(@filePath, "# " + polygons.ToString("0") + " polygons");
+			if(triangles > 0)
+			{
+				File.AppendAllText(@filePath, " - " + triangles + " triangles");
+			}
+
+			File.AppendAllText(@filePath, Environment.NewLine);
+			File.AppendAllText(@filePath, Environment.NewLine);
 		}
 	}
 }

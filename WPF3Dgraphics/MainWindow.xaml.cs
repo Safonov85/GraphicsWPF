@@ -115,8 +115,9 @@ namespace WPF3Dgraphics
 			}
 			cube.TriangleIndices = Triangles;
 
+
 			// For OBJ faces
-			//for (int i = 0; i < 8; i++)
+			//for (int i = 0; i < 8; i += 3)
 			//{
 			//	faces.Add(indices[i].ToString() + " ");
 			//	faces[i] = faces[i] + indices[i + 1].ToString() + " ";
