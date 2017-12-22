@@ -105,6 +105,21 @@ namespace WPF3Dgraphics
 						 2,7,3
 					  };
 
+			//Int32[] indices ={
+			//			 1,3,4,
+			//                      4,2,1,
+			//                      5,6,8,
+			//                      8,7,5,
+			//                      1,2,6,
+			//                      6,5,1,
+			//                      2,4,8,
+			//                      8,6,2,
+			//                      4,3,7,
+			//                      7,8,4,
+			//                      3,1,5,
+			//                      5,7,3
+			//		  };
+
 			indices2 = indices;
 
 			Int32Collection Triangles =

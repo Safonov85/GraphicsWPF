@@ -49,7 +49,7 @@ namespace WPF3Dgraphics
 			foreach(var face in cubeMesh.TriangleIndices)
 			{
 				i3++;
-				File.AppendAllText(@filePath, face.ToString() + " ");
+				File.AppendAllText(@filePath, (face + 1).ToString() + " ");
 
 				if(index == cubeMesh.TriangleIndices.Count - 1)
 				{
