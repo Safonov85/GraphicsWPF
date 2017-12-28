@@ -40,6 +40,7 @@ namespace WPF3Dgraphics
 			}
 			File.AppendAllText(@filePath, "# " + cubeMesh.Positions.Count + " vertices" + Environment.NewLine + Environment.NewLine);
 
+			// Faces in proper places
 			File.AppendAllText(@filePath, "g " + groupName + Environment.NewLine);
 			File.AppendAllText(@filePath, "f ");
 			int index = 0;
@@ -65,6 +66,8 @@ namespace WPF3Dgraphics
 				index++;
 			}
 			File.AppendAllText(@filePath, Environment.NewLine);
+
+			// Amount of polygons and or triangles
 			File.AppendAllText(@filePath, "# " + polygons.ToString("0") + " polygons");
 			if(triangles > 0)
 			{
