@@ -630,6 +630,11 @@ namespace WPF3Dgraphics
 			}
 		}
 
+		private void LinesButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
 		// W.I.P.
 		void ScaleObject()
 		{

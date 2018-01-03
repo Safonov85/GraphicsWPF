@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded" KeyDown="Window_KeyDown" ResizeMode="NoResize">
     <Grid>
-        <Button x:Name="LoadButton" Margin="0,0,0,654" Click="LoadButton_Click">Load</Button>
+        <Button x:Name="LoadButton" Margin="10,0,461,654" Click="LoadButton_Click">Load</Button>
+        <Button x:Name="LinesButton" Margin="80,0,409,654" Click="LinesButton_Click">Line</Button>
         <Button x:Name="MoveButton" Margin="10,34,452,621" Click="MoveButton_Click" Content="Move"/>
         <Button x:Name="RotateButton" Margin="87,34,375,621" Click="RotateButton_Click" Content="Rotate"/>
         <Button x:Name="ScaleButton" Margin="164,34,298,621" Click="ScaleButton_Click" Content="Scale"/>
