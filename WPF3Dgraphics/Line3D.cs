@@ -26,9 +26,15 @@ namespace WPF3Dgraphics
 
 		}
 
-		MeshGeometry3D MakeLine()
+		MeshGeometry3D MakeLine(Point3D[] points)
 		{
 			MeshGeometry3D line = new MeshGeometry3D();
+			Point3DCollection corners = new Point3DCollection();
+			foreach(var point in points)
+			{
+				corners.Add(point);
+			}
+			line.Positions = corners;
 
 			return line;
 		}

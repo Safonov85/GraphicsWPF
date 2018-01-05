@@ -62,6 +62,7 @@ namespace WPF3Dgraphics
 		double cameraX, cameraY, cameraZ;
 		double vertexX, vertexY;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
+		Line3D line3d = new Line3D();
 
 		//ModelImporter import = new ModelImporter();
 
@@ -70,7 +71,7 @@ namespace WPF3Dgraphics
 			InitializeComponent();
 		}
 
-		MeshGeometry3D MCube()
+		MeshGeometry3D MakeCube()
 		{
 			MeshGeometry3D cube = new MeshGeometry3D();
 			Point3DCollection corners = new Point3DCollection();
@@ -105,21 +106,6 @@ namespace WPF3Dgraphics
 						 2,7,3
 					  };
 
-			//Int32[] indices ={
-			//			 1,3,4,
-			//                      4,2,1,
-			//                      5,6,8,
-			//                      8,7,5,
-			//                      1,2,6,
-			//                      6,5,1,
-			//                      2,4,8,
-			//                      8,6,2,
-			//                      4,3,7,
-			//                      7,8,4,
-			//                      3,1,5,
-			//                      5,7,3
-			//		  };
-
 			indices2 = indices;
 
 			Int32Collection Triangles =
@@ -129,15 +115,6 @@ namespace WPF3Dgraphics
 				Triangles.Add(index);
 			}
 			cube.TriangleIndices = Triangles;
-
-
-			// For OBJ faces
-			//for (int i = 0; i < 8; i += 3)
-			//{
-			//	faces.Add(indices[i].ToString() + " ");
-			//	faces[i] = faces[i] + indices[i + 1].ToString() + " ";
-			//	faces[i] = faces[i] + indices[i + 2].ToString();
-			//}
 
 			for (int i = 0; i < cube.Positions.Count; i++)
 			{
@@ -183,7 +160,7 @@ namespace WPF3Dgraphics
 			DirLight1.Position = new Point3D(5, 5, 5);
 
 			PointLight DirLight2 = new PointLight();
-			DirLight2.Color = Colors.White;
+			DirLight2.Color = Colors.Gray;
 			DirLight2.Position = new Point3D(5, -5, 5);
 
 
@@ -230,7 +207,7 @@ namespace WPF3Dgraphics
 		// Only needs to be used once
 		void CreateCube()
 		{
-			MeshGeometry3D cubeMesh = MCube();
+			MeshGeometry3D cubeMesh = MakeCube();
 			Cube1.Geometry = cubeMesh;
 			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 
