@@ -13,6 +13,8 @@ namespace WPF3Dgraphics
 {
 	public class Cube3D
 	{
+
+		// Shapes for 2D layer (might be moved to separate class)
 		List<Ellipse> circles = new List<Ellipse>();
 		List<Line> myLines = new List<Line>();
 		List<TextBlock> textBlocks = new List<TextBlock>();

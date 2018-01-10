@@ -16,9 +16,16 @@ namespace WPF3Dgraphics
 		public double Position3D_Y { get; set; }
 		public double Position3D_Z { get; set; }
 
+		public List<Point3D> LinePoints = new List<Point3D>();
+
 		public void CreateFirstPoint()
 		{
 
+		}
+
+		public void AddNewPoint(double x, double y, double z)
+		{
+			LinePoints.Add(new Point3D(x, y, z));
 		}
 
 		public void CompleteLine()
@@ -26,6 +33,7 @@ namespace WPF3Dgraphics
 
 		}
 
+		// create points (not really a mesh ATM)
 		MeshGeometry3D MakeLine(Point3D[] points)
 		{
 			MeshGeometry3D line = new MeshGeometry3D();

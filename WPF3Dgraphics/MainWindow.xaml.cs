@@ -609,7 +609,10 @@ namespace WPF3Dgraphics
 
 		private void LinesButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			LineRange range;
+			Point point = Mouse.GetPosition(Canvas1);
+			Petzold.Media3D.ViewportInfo.Point2DtoPoint3D(myViewport, point, out range);
+			//line3d.AddNewPoint();
 		}
 
 		// W.I.P.
