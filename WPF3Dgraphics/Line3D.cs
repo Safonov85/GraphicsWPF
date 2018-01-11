@@ -18,6 +18,13 @@ namespace WPF3Dgraphics
 
 		public List<Point3D> LinePoints = new List<Point3D>();
 
+		public bool OnOrOff { get; set; }
+
+		public Line3D()
+		{
+			OnOrOff = false;
+		}
+
 		public void CreateFirstPoint()
 		{
 

@@ -306,10 +306,26 @@ namespace WPF3Dgraphics
 						i++;
 					}
 				}
+
+				if(line3d.OnOrOff == true)
+				{
+					double x = 0, y = 0, z = 1;
+					LineRange range;
+					Petzold.Media3D.ViewportInfo.Point2DtoPoint3D(myViewport, point, out range);
+					line3d.AddNewPoint(x, y, z);
+				} 
+
 			}
 			else if (e.ChangedButton == MouseButton.Middle) // Middle mousebutton pressed
 			{
 
+			}
+			else if(e.ChangedButton == MouseButton.Right)
+			{
+				if(line3d.OnOrOff == true)
+				{
+					line3d.OnOrOff = false;
+				}
 			}
 		}
 
@@ -609,10 +625,7 @@ namespace WPF3Dgraphics
 
 		private void LinesButton_Click(object sender, RoutedEventArgs e)
 		{
-			LineRange range;
-			Point point = Mouse.GetPosition(Canvas1);
-			Petzold.Media3D.ViewportInfo.Point2DtoPoint3D(myViewport, point, out range);
-			//line3d.AddNewPoint();
+			line3d.OnOrOff = true;
 		}
 
 		// W.I.P.
