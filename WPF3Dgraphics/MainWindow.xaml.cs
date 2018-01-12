@@ -63,6 +63,7 @@ namespace WPF3Dgraphics
 		double vertexX, vertexY;
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
 		Line3D line3d = new Line3D();
+		Cube3D cube3d = new Cube3D();
 
 		//ModelImporter import = new ModelImporter();
 
@@ -174,7 +175,7 @@ namespace WPF3Dgraphics
 			Camera1.LookDirection = new Vector3D(cameraX, cameraY, cameraZ);
 			Camera1.UpDirection = new Vector3D(0, 1, 0);
 
-
+			//modelGroup.Children.Add(cube3d.Cube1);
 			modelGroup.Children.Add(Cube1);
 			modelGroup.Children.Add(DirLight1);
 			modelGroup.Children.Add(DirLight2);
@@ -200,7 +201,15 @@ namespace WPF3Dgraphics
 
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
 		{
-			CreateCube();
+			if (false)
+			{
+				cube3d.CreateCube(Canvas1, myViewport);
+			}
+			else
+			{
+				CreateCube();
+			}
+			
 			LoadButton.Visibility = Visibility.Hidden;
 		}
 

@@ -20,6 +20,8 @@ namespace WPF3Dgraphics
 		List<TextBlock> textBlocks = new List<TextBlock>();
 		Int32[] indices2;
 
+		public GeometryModel3D Cube1 = new GeometryModel3D();
+
 		MeshGeometry3D MakeCube()
 		{
 			MeshGeometry3D cube = new MeshGeometry3D();
@@ -97,6 +99,65 @@ namespace WPF3Dgraphics
 			}
 
 			return cube;
+		}
+
+		public void CreateCube(Canvas canvas, Viewport3D viewport)
+		{
+			MeshGeometry3D cubeMesh = MakeCube();
+			Cube1.Geometry = cubeMesh;
+			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+
+			int i = 0;
+			foreach (var item in textBlocks)
+			{
+				canvas.Children.Add(item);
+
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[i]).X + 10,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[i]).Y + 10
+				};
+
+				i++;
+			}
+
+
+			// DOTS
+			i = 0;
+			foreach (var item in circles)
+			{
+				canvas.Children.Add(item);
+
+				item.RenderTransform = new TranslateTransform
+				{
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[i]).X - 2.5,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[i]).Y - 2.5
+				};
+
+				i++;
+			}
+
+			// WIREFRAME
+			i = 0;
+			int j = 1;
+			foreach (var item in myLines)
+			{
+				canvas.Children.Add(item);
+
+				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[i]]).X;
+				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[i]]).Y;
+
+				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[j]]).X;
+				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[j]]).Y;
+
+				if (j > myLines.Count - 2)
+				{
+					break;
+				}
+
+				i++;
+				j++;
+			}
 		}
 	}
 }
