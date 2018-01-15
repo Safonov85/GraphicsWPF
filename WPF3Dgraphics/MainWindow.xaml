@@ -10,6 +10,7 @@
     <Grid>
         <Button x:Name="LoadButton" Margin="10,0,461,654" Click="LoadButton_Click">Load</Button>
         <Button x:Name="LinesButton" Margin="80,0,409,654" Click="LinesButton_Click">Line</Button>
+        <Button x:Name="BallButton" Margin="132,0,357,654" Click="BallButton_Click">Ball</Button>
         <Button x:Name="MoveButton" Margin="10,34,452,621" Click="MoveButton_Click" Content="Move"/>
         <Button x:Name="RotateButton" Margin="87,34,375,621" Click="RotateButton_Click" Content="Rotate"/>
         <Button x:Name="ScaleButton" Margin="164,34,298,621" Click="ScaleButton_Click" Content="Scale"/>

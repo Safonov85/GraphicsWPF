@@ -637,6 +637,11 @@ namespace WPF3Dgraphics
 			line3d.OnOrOff = true;
 		}
 
+		private void BallButton_Click(object sender, RoutedEventArgs e)
+		{
+			// a sphere will be created here
+		}
+
 		// W.I.P.
 		void ScaleObject()
 		{
