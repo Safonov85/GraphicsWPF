@@ -64,6 +64,9 @@ namespace WPF3Dgraphics
 		PerspectiveCamera Camera1 = new PerspectiveCamera();
 		Line3D line3d = new Line3D();
 		Cube3D cube3d = new Cube3D();
+		Ball3D ball3d = new Ball3D();
+
+		List<GeometryModel3D> modelsInScene = new List<GeometryModel3D>();
 
 		//ModelImporter import = new ModelImporter();
 
@@ -199,19 +202,7 @@ namespace WPF3Dgraphics
 			MoveButton.Background = Brushes.Coral;
 		}
 
-		private void LoadButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (false)
-			{
-				cube3d.CreateCube(Canvas1, myViewport);
-			}
-			else
-			{
-				CreateCube();
-			}
-			
-			LoadButton.Visibility = Visibility.Hidden;
-		}
+
 
 		// Only needs to be used once
 		void CreateCube()
@@ -405,24 +396,30 @@ namespace WPF3Dgraphics
 			else if (e.MiddleButton == MouseButtonState.Pressed) // Middle mousebutton Pressed
 			{
 				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
-				//Camera1.UpDirection = new Vector3D(Camera1.UpDirection.X, Camera1.UpDirection.Y + 1, Camera1.UpDirection.Z +4);
 
-				DrawWireFrame();
+				//Camera1.UpDirection = new Vector3D(Camera1.UpDirection.X, Camera1.UpDirection.Y + 1, Camera1.UpDirection.Z +4);
+				if(modelsInScene.Count != 0)
+				{
+					foreach (var model in modelsInScene)
+					{
+						DrawWireFrame(model);
+					}
+				}
 			}
 		}
 
-		void DrawWireFrame()
+		void DrawWireFrame(GeometryModel3D geoModel)
 		{
-			MeshGeometry3D cubeMesh;
-			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+			MeshGeometry3D mesh;
+			mesh = (MeshGeometry3D)geoModel.Geometry;
 
 			int i = 0;
 			foreach (var item in textBlocks)
 			{
 				item.RenderTransform = new TranslateTransform
 				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
+					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X,
+					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y
 				};
 
 				i++;
@@ -436,8 +433,8 @@ namespace WPF3Dgraphics
 				{
 					item.RenderTransform = new TranslateTransform
 					{
-						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
-						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
+						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
+						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
 					};
 
 					i++;
@@ -449,11 +446,11 @@ namespace WPF3Dgraphics
 			int j = 1;
 			foreach (var item in myLines)
 			{
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
+				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[i]]).X;
+				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[i]]).Y;
 
-				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
-				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
+				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[j]]).X;
+				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[j]]).Y;
 
 				if (j > myLines.Count - 2)
 				{
@@ -585,7 +582,13 @@ namespace WPF3Dgraphics
 				item++;
 			}
 
-			DrawWireFrame();
+			if (modelsInScene.Count != 0)
+			{
+				foreach (var model in modelsInScene)
+				{
+					DrawWireFrame(model);
+				}
+			}
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -608,7 +611,13 @@ namespace WPF3Dgraphics
 				Camera1.FieldOfView += 1;
 			}
 
-			DrawWireFrame();
+			if (modelsInScene.Count != 0)
+			{
+				foreach (var model in modelsInScene)
+				{
+					DrawWireFrame(model);
+				}
+			}
 		}
 
 		private async void SaveModelButton_Click(object sender, RoutedEventArgs e)
@@ -632,6 +641,21 @@ namespace WPF3Dgraphics
 			}
 		}
 
+		private void LoadButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (false)
+			{
+				cube3d.CreateCube(Canvas1, myViewport);
+			}
+			else
+			{
+				CreateCube();
+				modelsInScene.Add(cube3d.Cube1);
+			}
+
+			LoadButton.Visibility = Visibility.Hidden;
+		}
+
 		private void LinesButton_Click(object sender, RoutedEventArgs e)
 		{
 			line3d.OnOrOff = true;
@@ -640,6 +664,10 @@ namespace WPF3Dgraphics
 		private void BallButton_Click(object sender, RoutedEventArgs e)
 		{
 			// a sphere will be created here
+
+			modelGroup.Children.Add(ball3d.Ball1);
+			ball3d.CreateCube(Canvas1, myViewport);
+			modelsInScene.Add(ball3d.Ball1);
 		}
 
 		// W.I.P.
