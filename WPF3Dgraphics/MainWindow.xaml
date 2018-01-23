@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:WPF3Dgraphics"
         xmlns:helix="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="714" Width="542" Loaded="Window_Loaded" KeyDown="Window_KeyDown" ResizeMode="NoResize">
+        Title="MainWindow" Height="714" Width="700" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid>
-        <Button x:Name="LoadButton" Margin="10,0,461,654" Click="LoadButton_Click">Load</Button>
-        <Button x:Name="LinesButton" Margin="80,0,409,654" Click="LinesButton_Click">Line</Button>
-        <Button x:Name="BallButton" Margin="132,0,357,654" Click="BallButton_Click">Ball</Button>
-        <Button x:Name="MoveButton" Margin="10,34,452,621" Click="MoveButton_Click" Content="Move"/>
-        <Button x:Name="RotateButton" Margin="87,34,375,621" Click="RotateButton_Click" Content="Rotate"/>
-        <Button x:Name="ScaleButton" Margin="164,34,298,621" Click="ScaleButton_Click" Content="Scale"/>
-        <Button x:Name="EditObjectButton" Margin="241,34,227,621" Click="EditObjectButton_Click" Content="Edit"/>
-        <Button x:Name="NoneButton" Margin="312,34,165,621" Click="NoneButton_Click" Content="None"/>
-        <ComboBox x:Name="comboBox" Canvas.Left="1" Canvas.Top="-38" Margin="374,34,109,621" SelectedIndex="0">
+        <Button x:Name="LoadButton" Margin="10,0,617,654" Click="LoadButton_Click">Load</Button>
+        <Button x:Name="LinesButton" Margin="80,0,565,654" Click="LinesButton_Click">Line</Button>
+        <Button x:Name="BallButton" Margin="132,0,507,654" Click="BallButton_Click">Ball</Button>
+        <Button x:Name="MoveButton" Margin="10,34,617,621" Click="MoveButton_Click" Content="Move"/>
+        <Button x:Name="RotateButton" Margin="80,34,559,621" Click="RotateButton_Click" Content="Rotate" RenderTransformOrigin="0.528,0.5"/>
+        <Button x:Name="ScaleButton" Margin="138,34,495,621" Click="ScaleButton_Click" Content="Scale"/>
+        <Button x:Name="EditObjectButton" Margin="202,34,447,621" Click="EditObjectButton_Click" Content="Edit"/>
+        <Button x:Name="NoneButton" Margin="250,34,400,621" Click="NoneButton_Click" Content="None"/>
+        <ComboBox x:Name="comboBox" Canvas.Left="1" Canvas.Top="-38" Margin="297,34,353,621" SelectedIndex="0">
             <ComboBoxItem Content="X"/>
             <ComboBoxItem Content="Y"/>
             <ComboBoxItem Content="Z"/>
@@ -24,7 +24,7 @@
         <Label x:Name="LabelCanvasX" Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,67,0,0"/>
         <Label x:Name="LabelCanvasY" Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,88,0,0"/>
 
-        <Border BorderBrush="Black" BorderThickness="2">
+        <Border BorderBrush="Black" BorderThickness="2" Margin="0,0,189,96">
             <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
                 VerticalAlignment="Top" Width="492" Margin="7,113,0,0"
@@ -32,7 +32,9 @@
             </Canvas>
         </Border>
 
-        <Button x:Name="SaveModelButton" Margin="10,609,433,22" Click="SaveModelButton_Click" Content="Save Model..."/>
+        <Button x:Name="SaveModelButton" Margin="10,609,591,22" Click="SaveModelButton_Click" Content="Save Model..."/>
+
+        <Button x:Name="SubDivButton" Margin="614,114,10,541" Click="SubDivButton_Click" Content="Sub-Div"/>
 
     </Grid>
 </Window>

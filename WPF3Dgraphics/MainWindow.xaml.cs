@@ -670,6 +670,11 @@ namespace WPF3Dgraphics
 			modelsInScene.Add(ball3d.Ball1);
 		}
 
+		private void SubDivButton_Click(object sender, RoutedEventArgs e)
+		{
+			// Sub Divide current model
+		}
+
 		// W.I.P.
 		void ScaleObject()
 		{
