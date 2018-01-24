@@ -24,7 +24,7 @@
         <Label x:Name="LabelCanvasX" Content="X: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,67,0,0"/>
         <Label x:Name="LabelCanvasY" Content="Y: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,88,0,0"/>
 
-        <Border BorderBrush="Black" BorderThickness="2" Margin="0,0,189,96">
+        <Border BorderBrush="Black" BorderThickness="2" Margin="0,0,171,74">
             <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
                 VerticalAlignment="Top" Width="492" Margin="7,113,0,0"

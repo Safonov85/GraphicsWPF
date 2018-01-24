@@ -14,9 +14,9 @@ namespace WPF3Dgraphics
 	public class Ball3D
 	{
 		List<Ellipse> circles = new List<Ellipse>();
-		List<Line> myLines = new List<Line>();
+		public List<Line> myLines = new List<Line>();
 		List<TextBlock> textBlocks = new List<TextBlock>();
-		Int32[] indices2;
+		public Int32[] indices2;
 
 		public GeometryModel3D Ball1 = new GeometryModel3D();
 
@@ -256,7 +256,7 @@ namespace WPF3Dgraphics
 			return ball;
 		}
 
-		public void CreateCube(Canvas canvas, Viewport3D viewport)
+		public void CreateCube(ref Canvas canvas, Viewport3D viewport)
 		{
 			MeshGeometry3D cubeMesh = MakeBall();
 			Ball1.Geometry = cubeMesh;

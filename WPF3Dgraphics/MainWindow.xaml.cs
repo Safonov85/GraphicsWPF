@@ -65,6 +65,7 @@ namespace WPF3Dgraphics
 		Line3D line3d = new Line3D();
 		Cube3D cube3d = new Cube3D();
 		Ball3D ball3d = new Ball3D();
+		Wireframe wireframe = new Wireframe();
 
 		List<GeometryModel3D> modelsInScene = new List<GeometryModel3D>();
 
@@ -402,7 +403,8 @@ namespace WPF3Dgraphics
 				{
 					foreach (var model in modelsInScene)
 					{
-						DrawWireFrame(model);
+						wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
+						//DrawWireFrame(model);
 					}
 				}
 			}
@@ -666,7 +668,7 @@ namespace WPF3Dgraphics
 			// a sphere will be created here
 
 			modelGroup.Children.Add(ball3d.Ball1);
-			ball3d.CreateCube(Canvas1, myViewport);
+			ball3d.CreateCube(ref Canvas1, myViewport);
 			modelsInScene.Add(ball3d.Ball1);
 		}
 
