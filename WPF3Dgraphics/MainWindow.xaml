@@ -16,7 +16,7 @@
         <Button x:Name="ScaleButton" Margin="138,34,495,621" Click="ScaleButton_Click" Content="Scale"/>
         <Button x:Name="EditObjectButton" Margin="202,34,447,621" Click="EditObjectButton_Click" Content="Edit"/>
         <Button x:Name="NoneButton" Margin="250,34,400,621" Click="NoneButton_Click" Content="None"/>
-        <ComboBox x:Name="comboBox" Canvas.Left="1" Canvas.Top="-38" Margin="297,34,353,621" SelectedIndex="0">
+        <ComboBox x:Name="comboBox" Canvas.Left="1" Canvas.Top="-38" Margin="297,34,341,621" SelectedIndex="0">
             <ComboBoxItem Content="X"/>
             <ComboBoxItem Content="Y"/>
             <ComboBoxItem Content="Z"/>

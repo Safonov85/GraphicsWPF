@@ -24,21 +24,21 @@ namespace WPF3Dgraphics
 {
 	public partial class MainWindow : Window
 	{
-		enum Angle
-		{
-			AngleX,
-			AngleY,
-			AngleZ
-		}
+		//enum Angle
+		//{
+		//	AngleX,
+		//	AngleY,
+		//	AngleZ
+		//}
 
-		enum Constraints
-		{
-			Position,
-			Rotation,
-			Scale,
-			EditObject,
-			None
-		}
+		//enum Constraints
+		//{
+		//	Position,
+		//	Rotation,
+		//	Scale,
+		//	EditObject,
+		//	None
+		//}
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
@@ -74,85 +74,6 @@ namespace WPF3Dgraphics
 		public MainWindow()
 		{
 			InitializeComponent();
-		}
-
-		MeshGeometry3D MakeCube()
-		{
-			MeshGeometry3D cube = new MeshGeometry3D();
-			Point3DCollection corners = new Point3DCollection();
-			corners.Add(new Point3D(0.5, 0.5, 0.5));
-			corners.Add(new Point3D(-0.5, 0.5, 0.5));
-			corners.Add(new Point3D(-0.5, -0.5, 0.5));
-			corners.Add(new Point3D(0.5, -0.5, 0.5));
-			corners.Add(new Point3D(0.5, 0.5, -0.5));
-			corners.Add(new Point3D(-0.5, 0.5, -0.5));
-			corners.Add(new Point3D(-0.5, -0.5, -0.5));
-			corners.Add(new Point3D(0.5, -0.5, -0.5));
-			cube.Positions = corners;
-
-			Int32[] indices ={
-			                    //front
-			                      0,1,2,
-						 0,2,3,
-			                   //back
-			                      4,7,6,
-						 4,6,5,
-			                   //Right
-			                      4,0,3,
-						 4,3,7,
-			                   //Left
-			                      1,5,6,
-						 1,6,2,
-			                   //Top
-			                      1,0,4,
-						 1,4,5,
-			                   //Bottom
-			                      2,6,7,
-						 2,7,3
-					  };
-
-			indices2 = indices;
-
-			Int32Collection Triangles =
-								  new Int32Collection();
-			foreach (Int32 index in indices)
-			{
-				Triangles.Add(index);
-			}
-			cube.TriangleIndices = Triangles;
-
-			for (int i = 0; i < cube.Positions.Count; i++)
-			{
-				// Text for Vertex
-				TextBlock text = new TextBlock();
-				text.Text = i.ToString();
-				text.HorizontalAlignment = HorizontalAlignment.Center;
-				text.Background = Brushes.White;
-
-				textBlocks.Add(text);
-
-				// Circles for Vertex
-				Ellipse circle = new Ellipse();
-				circle.Stroke = System.Windows.Media.Brushes.Transparent;
-				circle.Fill = System.Windows.Media.Brushes.Transparent;
-				circle.Width = 5;
-				circle.Height = 5;
-
-				circles.Add(circle);
-			}
-
-			for (int i = 0; i < indices.Length; i++)
-			{
-				Line line = new Line();
-				line.Stroke = System.Windows.Media.Brushes.White;
-				line.HorizontalAlignment = HorizontalAlignment.Left;
-				line.VerticalAlignment = VerticalAlignment.Center;
-				line.StrokeThickness = 1;
-
-				myLines.Add(line);
-			}
-
-			return cube;
 		}
 
 		private void Window_Loaded(object sender,
@@ -201,79 +122,6 @@ namespace WPF3Dgraphics
 			RenderOptions.SetEdgeMode(Canvas1, EdgeMode.Aliased);
 
 			MoveButton.Background = Brushes.Coral;
-		}
-
-
-
-		// Only needs to be used once
-		void CreateCube()
-		{
-			MeshGeometry3D cubeMesh = MakeCube();
-			Cube1.Geometry = cubeMesh;
-			Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-
-			int i = 0;
-			foreach (var item in textBlocks)
-			{
-				Canvas1.Children.Add(item);
-
-				item.RenderTransform = new TranslateTransform
-				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X + 10,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y + 10
-				};
-
-				i++;
-			}
-
-
-			// DOTS
-			i = 0;
-			foreach (var item in circles)
-			{
-				Canvas1.Children.Add(item);
-
-				item.RenderTransform = new TranslateTransform
-				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
-				};
-
-				i++;
-			}
-
-			if (constraints == Constraints.EditObject)
-			{
-				int item = 0;
-				while (item < circles.Count - 1)
-				{
-					circles[item].Stroke = System.Windows.Media.Brushes.Blue;
-					circles[item].Fill = System.Windows.Media.Brushes.Blue;
-					item++;
-				}
-			}
-
-			// WIREFRAME
-			i = 0;
-			int j = 1;
-			foreach (var item in myLines)
-			{
-				Canvas1.Children.Add(item);
-
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[i]]).Y;
-
-				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
-				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
-
-				if (j > myLines.Count - 2)
-				{
-					break;
-				}
-
-				i++;
-				j++;
-			}
 		}
 
 		private void Canvas1_MouseDown(object sender, MouseButtonEventArgs e)
@@ -588,7 +436,8 @@ namespace WPF3Dgraphics
 			{
 				foreach (var model in modelsInScene)
 				{
-					DrawWireFrame(model);
+					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
+					//DrawWireFrame(model);
 				}
 			}
 		}
@@ -617,7 +466,8 @@ namespace WPF3Dgraphics
 			{
 				foreach (var model in modelsInScene)
 				{
-					DrawWireFrame(model);
+					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
+					//DrawWireFrame(model);
 				}
 			}
 		}
@@ -645,14 +495,14 @@ namespace WPF3Dgraphics
 
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (false)
+			if (true)
 			{
 				cube3d.CreateCube(Canvas1, myViewport);
 			}
 			else
 			{
-				CreateCube();
-				modelsInScene.Add(cube3d.Cube1);
+				//CreateCube();
+				//modelsInScene.Add(cube3d.Cube1);
 			}
 
 			LoadButton.Visibility = Visibility.Hidden;
@@ -669,6 +519,7 @@ namespace WPF3Dgraphics
 
 			modelGroup.Children.Add(ball3d.Ball1);
 			ball3d.CreateCube(ref Canvas1, myViewport);
+			wireframe.CreateModelWire(ball3d.Ball1, myViewport, ref Canvas1, ball3d.indices2, ball3d.myLines);
 			modelsInScene.Add(ball3d.Ball1);
 		}
 
