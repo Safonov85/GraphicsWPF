@@ -66,6 +66,9 @@ namespace WPF3Dgraphics
 		Cube3D cube3d = new Cube3D();
 		Ball3D ball3d = new Ball3D();
 		Wireframe wireframe = new Wireframe();
+		MoveObject moveObject = new MoveObject();
+
+		public int CurrentObjectSelected { get; set; }
 
 		List<GeometryModel3D> modelsInScene = new List<GeometryModel3D>();
 
@@ -178,6 +181,44 @@ namespace WPF3Dgraphics
 			}
 		}
 
+		void DetectDotVertex(int item, bool ctrlPressed)
+		{
+			// Clear all reds, MAKE BLUE
+			if (ctrlPressed == false)
+			{
+				int i = 0;
+				while (i < circles.Count - 1)
+				{
+					circles[i].Stroke = System.Windows.Media.Brushes.Blue;
+					circles[i].Fill = System.Windows.Media.Brushes.Blue;
+					i++;
+				}
+			}
+			if (circles[item].Fill != System.Windows.Media.Brushes.Red)
+			{
+				circles[item].Stroke = System.Windows.Media.Brushes.Red;
+				circles[item].Fill = System.Windows.Media.Brushes.Red;
+			}
+			else
+			{
+				circles[item].Stroke = System.Windows.Media.Brushes.Blue;
+				circles[item].Fill = System.Windows.Media.Brushes.Blue;
+			}
+
+		}
+
+		// Detecteing if the blue vertex is pressed outside it or inside it
+		bool VertexPressed(int xMousePos, int yMousePos, int xVert, int yVert)
+		{
+			if (xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
+			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
 		{
 			Point point = Mouse.GetPosition(Canvas1);
@@ -188,7 +229,8 @@ namespace WPF3Dgraphics
 			{
 				if (constraints == Constraints.Position)
 				{
-					MoveObject();
+					//moveObject.MoveTheObject()
+					//MoveObject();
 				}
 				else if (constraints == Constraints.Rotation)
 				{
@@ -214,28 +256,31 @@ namespace WPF3Dgraphics
 				}
 				else if (constraints == Constraints.EditObject)
 				{
-					MeshGeometry3D cubeMesh;
-					cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-					int selected = 0;
-					while (selected < cubeMesh.Positions.Count)
-					{
-						if (circles[selected].Fill == System.Windows.Media.Brushes.Red)
+					MeshGeometry3D modelMesh;
+					modelMesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
+
+					//cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+					int[] selected = new int[modelMesh.Positions.Count];
+					int number = 0;
+					//while (selected < modelMesh.Positions.Count)
+					//{
+						if (circles[number].Fill == System.Windows.Media.Brushes.Red)
 						{
 							if (comboBox.SelectedIndex == 0)
 							{
-								MoveVertex(selected, true, false, false);
+								MoveVertex(modelMesh, selected, true, false, false);
 							}
 							else if (comboBox.SelectedIndex == 1)
 							{
-								MoveVertex(selected, false, true, false);
+							MoveVertex(modelMesh, selected, false, true, false);
 							}
 							else if (comboBox.SelectedIndex == 2)
 							{
-								MoveVertex(selected, false, false, true);
+							MoveVertex(modelMesh, selected, false, false, true);
 							}
 						}
-						selected++;
-					}
+					//	selected++;
+					//}
 				}
 				else if (constraints == Constraints.None)
 				{
@@ -253,6 +298,73 @@ namespace WPF3Dgraphics
 					{
 						wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
 						//DrawWireFrame(model);
+					}
+				}
+			}
+		}
+
+		// Moving selected Vertex(red)
+		void MoveVertex(MeshGeometry3D geoModel, int[] verts, bool x, bool y, bool z)
+		{
+			MeshGeometry3D cubeMesh;
+			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+
+			Point point = Mouse.GetPosition(Canvas1);
+
+
+			foreach (var vert in verts)
+			{
+				if (x == true)
+				{
+					double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotX);
+
+					cubeMesh.Positions[vert] = new Point3D
+					(finalX * 0.01,
+					cubeMesh.Positions[vert].Y,
+					cubeMesh.Positions[vert].Z);
+					lastPosDotX = cubeMesh.Positions[vert].X;
+				}
+				else if (y == true)
+				{
+					double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
+
+					cubeMesh.Positions[vert] = new Point3D
+					(cubeMesh.Positions[vert].X,
+					finalY * 0.01,
+					cubeMesh.Positions[vert].Z);
+					lastPosDotY = cubeMesh.Positions[vert].Y;
+				}
+				else if (z == true)
+				{
+					double finalZ = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotZ);
+
+					cubeMesh.Positions[vert] = new Point3D
+					(cubeMesh.Positions[vert].X,
+					cubeMesh.Positions[vert].Y,
+					finalZ * 0.01);
+					lastPosDotZ = cubeMesh.Positions[vert].Z;
+				}
+			}
+
+			// Which direction to move in
+			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
+
+			// kinda unnecessary
+			geoModel = cubeMesh;
+
+			foreach (var vert in verts)
+			{
+				if (constraints == Constraints.EditObject)
+				{
+					// Update Dots
+					foreach (var item in circles)
+					{
+						item.RenderTransform = new TranslateTransform
+						{
+							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).X - 2.5,
+							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).Y - 2.5
+						};
+
 					}
 				}
 			}
@@ -313,44 +425,6 @@ namespace WPF3Dgraphics
 
 
 
-		}
-
-		void DetectDotVertex(int item, bool ctrlPressed)
-		{
-			// Clear all reds, MAKE BLUE
-			if (ctrlPressed == false)
-			{
-				int i = 0;
-				while (i < circles.Count - 1)
-				{
-					circles[i].Stroke = System.Windows.Media.Brushes.Blue;
-					circles[i].Fill = System.Windows.Media.Brushes.Blue;
-					i++;
-				}
-			}
-			if (circles[item].Fill != System.Windows.Media.Brushes.Red)
-			{
-				circles[item].Stroke = System.Windows.Media.Brushes.Red;
-				circles[item].Fill = System.Windows.Media.Brushes.Red;
-			}
-			else
-			{
-				circles[item].Stroke = System.Windows.Media.Brushes.Blue;
-				circles[item].Fill = System.Windows.Media.Brushes.Blue;
-			}
-
-		}
-
-		// Detecteing if the blue vertex is pressed outside it or inside it
-		bool VertexPressed(int xMousePos, int yMousePos, int xVert, int yVert)
-		{
-			if (xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
-			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
-			{
-				return true;
-			}
-
-			return false;
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -472,7 +546,7 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		private async void SaveModelButton_Click(object sender, RoutedEventArgs e)
+		private async void SaveModelButton_Click(object sender, RoutedEventArgs e, GeometryModel3D geoModel)
 		{
 			Stream myStream;
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -488,7 +562,7 @@ namespace WPF3Dgraphics
 					//WriteTextAsync("Testing write async method");
 					myStream.Close();
 					ObjCreation obj = new ObjCreation();
-					obj.CreateObjFile(saveFileDialog.FileName, Cube1);
+					obj.CreateObjFile(saveFileDialog.FileName, geoModel, geoModel.ToString());
 				}
 			}
 		}
@@ -521,6 +595,7 @@ namespace WPF3Dgraphics
 			ball3d.CreateCube(ref Canvas1, myViewport);
 			wireframe.CreateModelWire(ball3d.Ball1, myViewport, ref Canvas1, ball3d.indices2, ball3d.myLines);
 			modelsInScene.Add(ball3d.Ball1);
+			CurrentObjectSelected = 0;
 		}
 
 		private void SubDivButton_Click(object sender, RoutedEventArgs e)
@@ -603,103 +678,7 @@ namespace WPF3Dgraphics
 			Cube1.Transform = myTransform3DGroup;
 		}
 
-		// Moving selected Vertex(red)
-		void MoveVertex(int vert, bool x, bool y, bool z)
-		{
-			MeshGeometry3D cubeMesh;
-			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-
-			Point point = Mouse.GetPosition(Canvas1);
-
-
-
-			if (x == true)
-			{
-				double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotX);
-
-				cubeMesh.Positions[vert] = new Point3D
-				(finalX * 0.01,
-				cubeMesh.Positions[vert].Y,
-				cubeMesh.Positions[vert].Z);
-				lastPosDotX = cubeMesh.Positions[vert].X;
-			}
-			else if (y == true)
-			{
-				double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
-
-				cubeMesh.Positions[vert] = new Point3D
-				(cubeMesh.Positions[vert].X,
-				finalY * 0.01,
-				cubeMesh.Positions[vert].Z);
-				lastPosDotY = cubeMesh.Positions[vert].Y;
-			}
-			else if (z == true)
-			{
-				double finalZ = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotZ);
-
-				cubeMesh.Positions[vert] = new Point3D
-				(cubeMesh.Positions[vert].X,
-				cubeMesh.Positions[vert].Y,
-				finalZ * 0.01);
-				lastPosDotZ = cubeMesh.Positions[vert].Z;
-			}
-
-
-			// Which direction to move in
-			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
-
-			// kinda unnecessary
-			Cube1.Geometry = cubeMesh;
-
-			if (constraints == Constraints.EditObject)
-			{
-				// Update Dots
-				vert = 0;
-				foreach (var item in circles)
-				{
-					item.RenderTransform = new TranslateTransform
-					{
-						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).X - 2.5,
-						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).Y - 2.5
-					};
-
-					vert++;
-				}
-			}
-
-			// Update Text Numbers
-			int i = 0;
-			foreach (var item in textBlocks)
-			{
-				item.RenderTransform = new TranslateTransform
-				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y
-				};
-
-				i++;
-			}
-
-			// Update Wireframe
-			vert = 0;
-			int j = 1;
-			foreach (var item in myLines)
-			{
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[vert]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[vert]]).Y;
-
-				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).X;
-				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[indices2[j]]).Y;
-
-				if (j > myLines.Count - 2)
-				{
-					break;
-				}
-
-				vert++;
-				j++;
-			}
-		}
+		
 
 		// Just for fun/test
 		void RotateCubeAnimation()

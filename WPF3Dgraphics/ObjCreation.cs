@@ -10,9 +10,9 @@ namespace WPF3Dgraphics
 {
 	public class ObjCreation
 	{
-		public void CreateObjFile(string filePath, GeometryModel3D geoModel)
+		public void CreateObjFile(string filePath, GeometryModel3D geoModel, string groupName)
 		{
-			string groupName = "cube";
+			
 			MeshGeometry3D cubeMesh;
 			cubeMesh = (MeshGeometry3D)geoModel.Geometry;
 			string[] objText = new string[]
