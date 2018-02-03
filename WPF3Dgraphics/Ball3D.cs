@@ -13,7 +13,7 @@ namespace WPF3Dgraphics
 {
 	public class Ball3D
 	{
-		List<Ellipse> circles = new List<Ellipse>();
+		public List<Ellipse> circles = new List<Ellipse>();
 		public List<Line> myLines = new List<Line>();
 		List<TextBlock> textBlocks = new List<TextBlock>();
 		public Int32[] indices2;
@@ -222,25 +222,25 @@ namespace WPF3Dgraphics
 			}
 			ball.TriangleIndices = Triangles;
 
-			//for (int i = 0; i < ball.Positions.Count; i++)
-			//{
-			//	// Text for Vertex
-			//	TextBlock text = new TextBlock();
-			//	text.Text = i.ToString();
-			//	text.HorizontalAlignment = HorizontalAlignment.Center;
-			//	text.Background = Brushes.White;
+			for (int i = 0; i < ball.Positions.Count; i++)
+			{
+				// Text for Vertex
+				//TextBlock text = new TextBlock();
+				//text.Text = i.ToString();
+				//text.HorizontalAlignment = HorizontalAlignment.Center;
+				//text.Background = Brushes.White;
 
-			//	textBlocks.Add(text);
+				//textBlocks.Add(text);
 
-			//	// Circles for Vertex
-			//	Ellipse circle = new Ellipse();
-			//	circle.Stroke = System.Windows.Media.Brushes.Transparent;
-			//	circle.Fill = System.Windows.Media.Brushes.Transparent;
-			//	circle.Width = 5;
-			//	circle.Height = 5;
+				// Circles for Vertex
+				Ellipse circle = new Ellipse();
+				circle.Stroke = System.Windows.Media.Brushes.Transparent;
+				circle.Fill = System.Windows.Media.Brushes.Transparent;
+				circle.Width = 5;
+				circle.Height = 5;
 
-			//	circles.Add(circle);
-			//}
+				circles.Add(circle);
+			}
 
 			for (int i = 0; i < indices.Length; i++)
 			{

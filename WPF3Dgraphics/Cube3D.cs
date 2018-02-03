@@ -15,10 +15,10 @@ namespace WPF3Dgraphics
 	{
 
 		// Shapes for 2D layer (might be moved to separate class)
-		List<Ellipse> circles = new List<Ellipse>();
-		List<Line> myLines = new List<Line>();
-		List<TextBlock> textBlocks = new List<TextBlock>();
-		Int32[] indices2;
+		public List<Ellipse> circles = new List<Ellipse>();
+		public List<Line> myLines = new List<Line>();
+		public List<TextBlock> textBlocks = new List<TextBlock>();
+		public Int32[] indices2;
 
 		public GeometryModel3D Cube1 = new GeometryModel3D();
 
@@ -101,7 +101,7 @@ namespace WPF3Dgraphics
 			return cube;
 		}
 
-		public void CreateCube(Canvas canvas, Viewport3D viewport)
+		public void CreateCube(ref Canvas canvas, Viewport3D viewport)
 		{
 			MeshGeometry3D cubeMesh = MakeCube();
 			Cube1.Geometry = cubeMesh;

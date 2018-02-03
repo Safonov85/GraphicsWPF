@@ -104,7 +104,7 @@ namespace WPF3Dgraphics
 			Camera1.UpDirection = new Vector3D(0, 1, 0);
 
 			//modelGroup.Children.Add(cube3d.Cube1);
-			modelGroup.Children.Add(Cube1);
+			//modelGroup.Children.Add(Cube1);
 			modelGroup.Children.Add(DirLight1);
 			modelGroup.Children.Add(DirLight2);
 
@@ -135,16 +135,16 @@ namespace WPF3Dgraphics
 			{
 				if (constraints == Constraints.EditObject)
 				{
+					MeshGeometry3D mesh;
+					mesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
 					int i = 0;
 					foreach (var item in circles)
 					{
-
-						MeshGeometry3D cubeMesh;
-						cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+						
 						item.RenderTransform = new TranslateTransform
 						{
-							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).X - 2.5,
-							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[i]).Y - 2.5
+							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
+							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
 
 							//DetectDotVertex(point.X, point.Y,
 						};
@@ -258,7 +258,7 @@ namespace WPF3Dgraphics
 				{
 					MeshGeometry3D modelMesh;
 					modelMesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
-
+					
 					//cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 					int[] selected = new int[modelMesh.Positions.Count];
 					int number = 0;
@@ -300,49 +300,60 @@ namespace WPF3Dgraphics
 						//DrawWireFrame(model);
 					}
 				}
+
+				// Update DOTS
+				MeshGeometry3D mesh;
+				mesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
+				int i = 0;
+				foreach (var item in circles)
+				{
+
+					item.RenderTransform = new TranslateTransform
+					{
+						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
+						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
+					};
+					i++;
+				}
 			}
 		}
 
 		// Moving selected Vertex(red)
 		void MoveVertex(MeshGeometry3D geoModel, int[] verts, bool x, bool y, bool z)
 		{
-			MeshGeometry3D cubeMesh;
-			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
-
 			Point point = Mouse.GetPosition(Canvas1);
-
-
+			
 			foreach (var vert in verts)
 			{
 				if (x == true)
 				{
-					double finalX = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotX);
+					double finalX = geoModel.Positions[vert].Y + (point.Y - lastPosDotX);
 
-					cubeMesh.Positions[vert] = new Point3D
+					geoModel.Positions[vert] = new Point3D
 					(finalX * 0.01,
-					cubeMesh.Positions[vert].Y,
-					cubeMesh.Positions[vert].Z);
-					lastPosDotX = cubeMesh.Positions[vert].X;
+					geoModel.Positions[vert].Y,
+					geoModel.Positions[vert].Z);
+					lastPosDotX = geoModel.Positions[vert].X;
 				}
 				else if (y == true)
 				{
-					double finalY = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotY);
+					double finalY = geoModel.Positions[vert].Y + (point.Y - lastPosDotY);
 
-					cubeMesh.Positions[vert] = new Point3D
-					(cubeMesh.Positions[vert].X,
+					geoModel.Positions[vert] = new Point3D
+					(geoModel.Positions[vert].X,
 					finalY * 0.01,
-					cubeMesh.Positions[vert].Z);
-					lastPosDotY = cubeMesh.Positions[vert].Y;
+					geoModel.Positions[vert].Z);
+					lastPosDotY = geoModel.Positions[vert].Y;
 				}
 				else if (z == true)
 				{
-					double finalZ = cubeMesh.Positions[vert].Y + (point.Y - lastPosDotZ);
+					double finalZ = geoModel.Positions[vert].Y + (point.Y - lastPosDotZ);
 
-					cubeMesh.Positions[vert] = new Point3D
-					(cubeMesh.Positions[vert].X,
-					cubeMesh.Positions[vert].Y,
+					geoModel.Positions[vert] = new Point3D
+					(geoModel.Positions[vert].X,
+					geoModel.Positions[vert].Y,
 					finalZ * 0.01);
-					lastPosDotZ = cubeMesh.Positions[vert].Z;
+					lastPosDotZ = geoModel.Positions[vert].Z;
 				}
 			}
 
@@ -350,7 +361,7 @@ namespace WPF3Dgraphics
 			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
 
 			// kinda unnecessary
-			geoModel = cubeMesh;
+			//geoModel = cubeMesh;
 
 			foreach (var vert in verts)
 			{
@@ -361,70 +372,13 @@ namespace WPF3Dgraphics
 					{
 						item.RenderTransform = new TranslateTransform
 						{
-							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).X - 2.5,
-							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, cubeMesh.Positions[vert]).Y - 2.5
+							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[vert]).X - 2.5,
+							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[vert]).Y - 2.5
 						};
 
 					}
 				}
 			}
-		}
-
-		void DrawWireFrame(GeometryModel3D geoModel)
-		{
-			MeshGeometry3D mesh;
-			mesh = (MeshGeometry3D)geoModel.Geometry;
-
-			int i = 0;
-			foreach (var item in textBlocks)
-			{
-				item.RenderTransform = new TranslateTransform
-				{
-					X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X,
-					Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y
-				};
-
-				i++;
-			}
-
-			if (constraints == Constraints.EditObject)
-			{
-				// Vertex DOTS
-				i = 0;
-				foreach (var item in circles)
-				{
-					item.RenderTransform = new TranslateTransform
-					{
-						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
-						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
-					};
-
-					i++;
-				}
-			}
-
-			// WIREFRAME
-			i = 0;
-			int j = 1;
-			foreach (var item in myLines)
-			{
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[i]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[i]]).Y;
-
-				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[j]]).X;
-				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[indices2[j]]).Y;
-
-				if (j > myLines.Count - 2)
-				{
-					break;
-				}
-
-				i++;
-				j++;
-			}
-
-
-
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -543,10 +497,28 @@ namespace WPF3Dgraphics
 					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
 					//DrawWireFrame(model);
 				}
+
+				if (constraints == Constraints.EditObject)
+				{
+					// Update DOTS
+					MeshGeometry3D mesh;
+					mesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
+					int i = 0;
+					foreach (var item in circles)
+					{
+
+						item.RenderTransform = new TranslateTransform
+						{
+							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
+							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
+						};
+						i++;
+					}
+				}
 			}
 		}
 
-		private async void SaveModelButton_Click(object sender, RoutedEventArgs e, GeometryModel3D geoModel)
+		private void SaveModelButton_Click(object sender, RoutedEventArgs e)
 		{
 			Stream myStream;
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -562,7 +534,7 @@ namespace WPF3Dgraphics
 					//WriteTextAsync("Testing write async method");
 					myStream.Close();
 					ObjCreation obj = new ObjCreation();
-					obj.CreateObjFile(saveFileDialog.FileName, geoModel, geoModel.ToString());
+					obj.CreateObjFile(saveFileDialog.FileName, modelsInScene[CurrentObjectSelected], modelsInScene[CurrentObjectSelected].ToString());
 				}
 			}
 		}
@@ -571,7 +543,12 @@ namespace WPF3Dgraphics
 		{
 			if (true)
 			{
-				cube3d.CreateCube(Canvas1, myViewport);
+				modelGroup.Children.Add(cube3d.Cube1);
+				cube3d.CreateCube(ref Canvas1, myViewport);
+				wireframe.CreateModelWire(cube3d.Cube1, myViewport, ref Canvas1, cube3d.indices2, cube3d.myLines);
+				modelsInScene.Add(cube3d.Cube1);
+				circles = cube3d.circles;
+				CurrentObjectSelected = modelsInScene.Count - 1;
 			}
 			else
 			{
@@ -595,7 +572,8 @@ namespace WPF3Dgraphics
 			ball3d.CreateCube(ref Canvas1, myViewport);
 			wireframe.CreateModelWire(ball3d.Ball1, myViewport, ref Canvas1, ball3d.indices2, ball3d.myLines);
 			modelsInScene.Add(ball3d.Ball1);
-			CurrentObjectSelected = 0;
+			circles = ball3d.circles;
+			CurrentObjectSelected = modelsInScene.Count - 1;
 		}
 
 		private void SubDivButton_Click(object sender, RoutedEventArgs e)
