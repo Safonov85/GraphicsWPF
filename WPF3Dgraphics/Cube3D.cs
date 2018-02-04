@@ -70,12 +70,12 @@ namespace WPF3Dgraphics
 			for (int i = 0; i < cube.Positions.Count; i++)
 			{
 				// Text for Vertex
-				TextBlock text = new TextBlock();
-				text.Text = i.ToString();
-				text.HorizontalAlignment = HorizontalAlignment.Center;
-				text.Background = Brushes.White;
+				//TextBlock text = new TextBlock();
+				//text.Text = i.ToString();
+				//text.HorizontalAlignment = HorizontalAlignment.Center;
+				//text.Background = Brushes.White;
 
-				textBlocks.Add(text);
+				//textBlocks.Add(text);
 
 				// Circles for Vertex
 				Ellipse circle = new Ellipse();
@@ -135,28 +135,6 @@ namespace WPF3Dgraphics
 				};
 
 				i++;
-			}
-
-			// WIREFRAME
-			i = 0;
-			int j = 1;
-			foreach (var item in myLines)
-			{
-				canvas.Children.Add(item);
-
-				item.X1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[i]]).X;
-				item.Y1 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[i]]).Y;
-
-				item.X2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[j]]).X;
-				item.Y2 = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(viewport, cubeMesh.Positions[indices2[j]]).Y;
-
-				if (j > myLines.Count - 2)
-				{
-					break;
-				}
-
-				i++;
-				j++;
 			}
 		}
 	}

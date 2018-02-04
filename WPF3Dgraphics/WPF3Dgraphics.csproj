@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="Enums.cs" />
     <Compile Include="MoveObject.cs" />
+    <Compile Include="Vertex.cs" />
     <Compile Include="Wireframe.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

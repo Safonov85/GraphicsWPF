@@ -42,7 +42,7 @@ namespace WPF3Dgraphics
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
-		GeometryModel3D Cube1 = new GeometryModel3D();
+		GeometryModel3D Cube2 = new GeometryModel3D();
 		Viewport3D myViewport = new Viewport3D();
 		Model3DGroup modelGroup = new Model3DGroup();
 		RotateTransform3D Rotate;
@@ -67,6 +67,7 @@ namespace WPF3Dgraphics
 		Ball3D ball3d = new Ball3D();
 		Wireframe wireframe = new Wireframe();
 		MoveObject moveObject = new MoveObject();
+		Vertex vertex = new Vertex();
 
 		public int CurrentObjectSelected { get; set; }
 
@@ -149,10 +150,10 @@ namespace WPF3Dgraphics
 							//DetectDotVertex(point.X, point.Y,
 						};
 
-						if (VertexPressed((int)point.X, (int)point.Y,
+						if(vertex.VertexPressed((int)point.X, (int)point.Y,
 							(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY))
 						{
-							DetectDotVertex(i, false); // bool if CTRL is pressed or not
+							vertex.DetectDotVertex(i, false, ref circles);
 							break;
 						}
 						i++;
@@ -181,44 +182,6 @@ namespace WPF3Dgraphics
 			}
 		}
 
-		void DetectDotVertex(int item, bool ctrlPressed)
-		{
-			// Clear all reds, MAKE BLUE
-			if (ctrlPressed == false)
-			{
-				int i = 0;
-				while (i < circles.Count - 1)
-				{
-					circles[i].Stroke = System.Windows.Media.Brushes.Blue;
-					circles[i].Fill = System.Windows.Media.Brushes.Blue;
-					i++;
-				}
-			}
-			if (circles[item].Fill != System.Windows.Media.Brushes.Red)
-			{
-				circles[item].Stroke = System.Windows.Media.Brushes.Red;
-				circles[item].Fill = System.Windows.Media.Brushes.Red;
-			}
-			else
-			{
-				circles[item].Stroke = System.Windows.Media.Brushes.Blue;
-				circles[item].Fill = System.Windows.Media.Brushes.Blue;
-			}
-
-		}
-
-		// Detecteing if the blue vertex is pressed outside it or inside it
-		bool VertexPressed(int xMousePos, int yMousePos, int xVert, int yVert)
-		{
-			if (xMousePos > (xVert - 5) && xMousePos < (xVert + 5)
-			&& yMousePos > (yVert - 5) && yMousePos < (yVert + 5))
-			{
-				return true;
-			}
-
-			return false;
-		}
-
 		private void Canvas1_MouseMove(object sender, MouseEventArgs e)
 		{
 			Point point = Mouse.GetPosition(Canvas1);
@@ -231,6 +194,7 @@ namespace WPF3Dgraphics
 				{
 					//moveObject.MoveTheObject()
 					//MoveObject();
+					moveObject.MoveTheObject(modelsInScene[CurrentObjectSelected], point, ref Canvas1, lastPosX, rotationCubeX);
 				}
 				else if (constraints == Constraints.Rotation)
 				{
@@ -385,7 +349,7 @@ namespace WPF3Dgraphics
 		{
 			if (e.LeftButton == MouseButtonState.Released)
 			{
-				Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+				//Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
 			}
 		}
 
@@ -589,7 +553,7 @@ namespace WPF3Dgraphics
 
 			scale.CenterX = 5;
 			myTransform3DGroup.Children.Add(scale);
-			Cube1.Transform = myTransform3DGroup;
+			//Cube1.Transform = myTransform3DGroup;
 
 		}
 
@@ -609,9 +573,9 @@ namespace WPF3Dgraphics
 			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
 
 			TranslateTransform3D newPosition =
-				new TranslateTransform3D(Cube1.Transform.Value.OffsetX,
-										Cube1.Transform.Value.OffsetY,
-										Cube1.Transform.Value.OffsetZ);
+				new TranslateTransform3D(Cube2.Transform.Value.OffsetX,
+										Cube2.Transform.Value.OffsetY,
+										Cube2.Transform.Value.OffsetZ);
 
 			// Add the rotation transform to a Transform3DGroup
 			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
@@ -619,7 +583,7 @@ namespace WPF3Dgraphics
 
 			// Adding current position (so it doesn't reset)
 			myTransform3DGroup.Children.Add(newPosition);
-			Cube1.Transform = myTransform3DGroup;
+			Cube2.Transform = myTransform3DGroup;
 
 			//vertexX = myViewport.ActualWidth * (1 - vertexX);
 			//myLine.X2 = vertexX;
@@ -627,9 +591,9 @@ namespace WPF3Dgraphics
 			lastPosX = point.X;
 
 			MeshGeometry3D cubeMesh;
-			cubeMesh = (MeshGeometry3D)Cube1.Geometry;
+			cubeMesh = (MeshGeometry3D)Cube2.Geometry;
 
-			Debug.WriteLine(Cube1.Transform.Value.OffsetX);
+			Debug.WriteLine(Cube2.Transform.Value.OffsetX);
 		}
 
 		// Moving the WHOLE object, (Only x Position ATM)
@@ -637,7 +601,7 @@ namespace WPF3Dgraphics
 		{
 			TranslateTransform3D newPosition;
 			Point point = Mouse.GetPosition(Canvas1);
-			newPosition = new TranslateTransform3D(Cube1.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
+			newPosition = new TranslateTransform3D(Cube2.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
 			
 			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
 			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
@@ -653,7 +617,7 @@ namespace WPF3Dgraphics
 			// Adding current position
 			myTransform3DGroup.Children.Add(newPosition);
 
-			Cube1.Transform = myTransform3DGroup;
+			Cube2.Transform = myTransform3DGroup;
 		}
 
 		
@@ -662,7 +626,7 @@ namespace WPF3Dgraphics
 		void RotateCubeAnimation()
 		{
 			axis = new AxisAngleRotation3D(new Vector3D(1, 0, 1), 0);
-			Cube1.Transform = new RotateTransform3D(axis);
+			Cube2.Transform = new RotateTransform3D(axis);
 			RotAngle.From = 0;
 			RotAngle.To = 360;
 			RotAngle.Duration = new Duration(TimeSpan.FromSeconds(1.0));
