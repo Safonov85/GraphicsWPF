@@ -24,21 +24,6 @@ namespace WPF3Dgraphics
 {
 	public partial class MainWindow : Window
 	{
-		//enum Angle
-		//{
-		//	AngleX,
-		//	AngleY,
-		//	AngleZ
-		//}
-
-		//enum Constraints
-		//{
-		//	Position,
-		//	Rotation,
-		//	Scale,
-		//	EditObject,
-		//	None
-		//}
 		Storyboard RotCube = new Storyboard();
 		DoubleAnimation RotAngle = new DoubleAnimation();
 		AxisAngleRotation3D axis = new AxisAngleRotation3D(new Vector3D(7, 1, 3), 5);
@@ -72,9 +57,7 @@ namespace WPF3Dgraphics
 		public int CurrentObjectSelected { get; set; }
 
 		List<GeometryModel3D> modelsInScene = new List<GeometryModel3D>();
-
-		//ModelImporter import = new ModelImporter();
-
+		
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -103,9 +86,7 @@ namespace WPF3Dgraphics
 			Camera1.Position = new Point3D(2, 2, 3);
 			Camera1.LookDirection = new Vector3D(cameraX, cameraY, cameraZ);
 			Camera1.UpDirection = new Vector3D(0, 1, 0);
-
-			//modelGroup.Children.Add(cube3d.Cube1);
-			//modelGroup.Children.Add(Cube1);
+			
 			modelGroup.Children.Add(DirLight1);
 			modelGroup.Children.Add(DirLight2);
 
@@ -141,13 +122,10 @@ namespace WPF3Dgraphics
 					int i = 0;
 					foreach (var item in circles)
 					{
-						
 						item.RenderTransform = new TranslateTransform
 						{
 							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
 							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
-
-							//DetectDotVertex(point.X, point.Y,
 						};
 
 						if(vertex.VertexPressed((int)point.X, (int)point.Y,
@@ -192,8 +170,6 @@ namespace WPF3Dgraphics
 			{
 				if (constraints == Constraints.Position)
 				{
-					//moveObject.MoveTheObject()
-					//MoveObject();
 					moveObject.MoveTheObject(modelsInScene[CurrentObjectSelected], point, ref Canvas1, lastPosX, rotationCubeX);
 				}
 				else if (constraints == Constraints.Rotation)
@@ -223,7 +199,6 @@ namespace WPF3Dgraphics
 					MeshGeometry3D modelMesh;
 					modelMesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
 					
-					//cubeMesh = (MeshGeometry3D)Cube1.Geometry;
 					int[] selected = new int[modelMesh.Positions.Count];
 					int number = 0;
 					//while (selected < modelMesh.Positions.Count)
@@ -254,14 +229,12 @@ namespace WPF3Dgraphics
 			else if (e.MiddleButton == MouseButtonState.Pressed) // Middle mousebutton Pressed
 			{
 				Camera1.LookDirection = new Vector3D(cameraX, cameraY + (point.Y * 0.002), cameraZ + (point.X * 0.002));
-
-				//Camera1.UpDirection = new Vector3D(Camera1.UpDirection.X, Camera1.UpDirection.Y + 1, Camera1.UpDirection.Z +4);
+				
 				if(modelsInScene.Count != 0)
 				{
 					foreach (var model in modelsInScene)
 					{
 						wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
-						//DrawWireFrame(model);
 					}
 				}
 
@@ -321,12 +294,6 @@ namespace WPF3Dgraphics
 				}
 			}
 
-			// Which direction to move in
-			//cubeMesh.Positions[vert] = new Point3D(cubeMesh.Positions[vert].X + x, cubeMesh.Positions[vert].Y + y, cubeMesh.Positions[vert].Z + z);
-
-			// kinda unnecessary
-			//geoModel = cubeMesh;
-
 			foreach (var vert in verts)
 			{
 				if (constraints == Constraints.EditObject)
@@ -349,7 +316,7 @@ namespace WPF3Dgraphics
 		{
 			if (e.LeftButton == MouseButtonState.Released)
 			{
-				//Cube1.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+				
 			}
 		}
 
@@ -429,7 +396,6 @@ namespace WPF3Dgraphics
 				foreach (var model in modelsInScene)
 				{
 					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
-					//DrawWireFrame(model);
 				}
 			}
 		}
@@ -438,7 +404,7 @@ namespace WPF3Dgraphics
 		{
 			if (e.Key == Key.Left)
 			{
-				//Camera1.UpDirection = new Vector3D(4, 6, 7);
+				
 			}
 		}
 
@@ -459,7 +425,6 @@ namespace WPF3Dgraphics
 				foreach (var model in modelsInScene)
 				{
 					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
-					//DrawWireFrame(model);
 				}
 
 				if (constraints == Constraints.EditObject)
@@ -495,7 +460,6 @@ namespace WPF3Dgraphics
 			{
 				if ((myStream = saveFileDialog.OpenFile()) != null)
 				{
-					//WriteTextAsync("Testing write async method");
 					myStream.Close();
 					ObjCreation obj = new ObjCreation();
 					obj.CreateObjFile(saveFileDialog.FileName, modelsInScene[CurrentObjectSelected], modelsInScene[CurrentObjectSelected].ToString());
@@ -516,8 +480,7 @@ namespace WPF3Dgraphics
 			}
 			else
 			{
-				//CreateCube();
-				//modelsInScene.Add(cube3d.Cube1);
+
 			}
 
 			LoadButton.Visibility = Visibility.Hidden;
@@ -553,7 +516,6 @@ namespace WPF3Dgraphics
 
 			scale.CenterX = 5;
 			myTransform3DGroup.Children.Add(scale);
-			//Cube1.Transform = myTransform3DGroup;
 
 		}
 
