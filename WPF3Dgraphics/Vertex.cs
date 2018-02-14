@@ -9,6 +9,8 @@ namespace WPF3Dgraphics
 {
 	public class Vertex
 	{
+		public int SelectedVertex { get; set; }
+
 		public void DetectDotVertex(int item, bool ctrlPressed, ref List<Ellipse> circles)
 		{
 			// Clear all reds, MAKE BLUE

@@ -132,6 +132,7 @@ namespace WPF3Dgraphics
 							(int)circles[i].RenderTransform.Value.OffsetX, (int)circles[i].RenderTransform.Value.OffsetY))
 						{
 							vertex.DetectDotVertex(i, false, ref circles);
+							vertex.SelectedVertex = i;
 							break;
 						}
 						i++;
@@ -203,19 +204,19 @@ namespace WPF3Dgraphics
 					int number = 0;
 					//while (selected < modelMesh.Positions.Count)
 					//{
-						if (circles[number].Fill == System.Windows.Media.Brushes.Red)
+						if (circles[vertex.SelectedVertex].Fill == System.Windows.Media.Brushes.Red)
 						{
 							if (comboBox.SelectedIndex == 0)
 							{
-								MoveVertex(modelMesh, selected, true, false, false);
+								MoveVertex(modelMesh, vertex.SelectedVertex, true, false, false);
 							}
 							else if (comboBox.SelectedIndex == 1)
 							{
-							MoveVertex(modelMesh, selected, false, true, false);
+							MoveVertex(modelMesh, vertex.SelectedVertex, false, true, false);
 							}
 							else if (comboBox.SelectedIndex == 2)
 							{
-							MoveVertex(modelMesh, selected, false, false, true);
+							MoveVertex(modelMesh, vertex.SelectedVertex, false, false, true);
 							}
 						}
 					//	selected++;
@@ -256,12 +257,12 @@ namespace WPF3Dgraphics
 		}
 
 		// Moving selected Vertex(red)
-		void MoveVertex(MeshGeometry3D geoModel, int[] verts, bool x, bool y, bool z)
+		void MoveVertex(MeshGeometry3D geoModel, int vert, bool x, bool y, bool z)
 		{
 			Point point = Mouse.GetPosition(Canvas1);
 			
-			foreach (var vert in verts)
-			{
+			//foreach (var vert in vert)
+			//{
 				if (x == true)
 				{
 					double finalX = geoModel.Positions[vert].Y + (point.Y - lastPosDotX);
@@ -292,24 +293,46 @@ namespace WPF3Dgraphics
 					finalZ * 0.01);
 					lastPosDotZ = geoModel.Positions[vert].Z;
 				}
-			}
+			//}
 
-			foreach (var vert in verts)
+			//RefreshFrame(System.Windows.Media.Brushes.Transparent);
+
+			if (modelsInScene.Count != 0)
 			{
-				if (constraints == Constraints.EditObject)
+				foreach (var model in modelsInScene)
 				{
-					// Update Dots
-					foreach (var item in circles)
-					{
-						item.RenderTransform = new TranslateTransform
-						{
-							X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[vert]).X - 2.5,
-							Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[vert]).Y - 2.5
-						};
-
-					}
+					wireframe.DrawWireFrame(model, myViewport, ball3d.indices2, ball3d.myLines);
 				}
 			}
+
+			//foreach (var vertic in geoModel.Positions)
+			//{
+			if (constraints == Constraints.EditObject)
+				{
+				// Update Dots
+				//foreach (var item in circles)
+				//{
+				//	item.RenderTransform = new TranslateTransform
+				//	{
+				//		X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[item]).X - 2.5,
+				//		Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, geoModel.Positions[item]).Y - 2.5
+				//	};
+				//}
+				MeshGeometry3D mesh;
+				mesh = (MeshGeometry3D)modelsInScene[CurrentObjectSelected].Geometry;
+				int i = 0;
+				foreach (var item in circles)
+				{
+
+					item.RenderTransform = new TranslateTransform
+					{
+						X = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).X - 2.5,
+						Y = Petzold.Media3D.ViewportInfo.Point3DtoPoint2D(myViewport, mesh.Positions[i]).Y - 2.5
+					};
+					i++;
+				}
+			}
+			//}
 		}
 
 		private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
