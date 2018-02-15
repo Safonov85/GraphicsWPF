@@ -28,13 +28,16 @@
             <Canvas MouseDown="Canvas1_MouseDown" x:Name="Canvas1"
                 HorizontalAlignment="Left" Height="469"
                 VerticalAlignment="Top" Width="492" Margin="7,113,0,0"
-                Background="LightBlue" MouseMove="Canvas1_MouseMove" MouseUp="Canvas1_MouseUp" MouseWheel="Canvas1_MouseWheel">
+                Background="LightBlue" MouseMove="Canvas1_MouseMove"
+                MouseUp="Canvas1_MouseUp" MouseWheel="Canvas1_MouseWheel"
+                KeyDown="Canvas1_KeyDown">
             </Canvas>
         </Border>
 
         <Button x:Name="SaveModelButton" Margin="10,609,591,22" Click="SaveModelButton_Click" Content="Save Model..."/>
 
         <Button x:Name="SubDivButton" Margin="614,114,10,541" Click="SubDivButton_Click" Content="Sub-Div"/>
+        <ToggleButton x:Name="ToggleButton" Margin="614,166,10,489" Content="Tog"></ToggleButton>
 
     </Grid>
 </Window>

@@ -61,6 +61,7 @@ namespace WPF3Dgraphics
 		public MainWindow()
 		{
 			InitializeComponent();
+			
 		}
 
 		private void Window_Loaded(object sender,
@@ -429,6 +430,10 @@ namespace WPF3Dgraphics
 			{
 				
 			}
+			if(e.Key == Key.LeftCtrl)
+			{
+				MessageBox.Show("left ctrl");
+			}
 		}
 
 		private void Canvas1_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -524,6 +529,11 @@ namespace WPF3Dgraphics
 			modelsInScene.Add(ball3d.Ball1);
 			circles = ball3d.circles;
 			CurrentObjectSelected = modelsInScene.Count - 1;
+		}
+
+		private void Canvas1_KeyDown(object sender, KeyEventArgs e)
+		{
+
 		}
 
 		private void SubDivButton_Click(object sender, RoutedEventArgs e)
