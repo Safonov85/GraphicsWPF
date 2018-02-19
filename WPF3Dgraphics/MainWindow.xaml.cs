@@ -64,6 +64,7 @@ namespace WPF3Dgraphics
 		public MainWindow()
 		{
 			InitializeComponent();
+			ToggleButton.Visibility = Visibility.Hidden;
 		}
 
 		private void Window_Loaded(object sender,
@@ -390,6 +391,7 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Coral;
 			NoneButton.Background = Brushes.Gray;
 			constraints = Constraints.EditObject;
+			ToggleEditModeButtons();
 
 			RefreshFrame(System.Windows.Media.Brushes.Blue);
 		}
@@ -402,6 +404,7 @@ namespace WPF3Dgraphics
 			EditObjectButton.Background = Brushes.Gray;
 			NoneButton.Background = Brushes.Coral;
 			constraints = Constraints.None;
+			ToggleEditModeButtons();
 
 			RefreshFrame(System.Windows.Media.Brushes.Transparent);
 		}
@@ -551,6 +554,18 @@ namespace WPF3Dgraphics
 		private void ToggleButton_MouseMove(object sender, MouseEventArgs e)
 		{
 
+		}
+
+		private void ToggleEditModeButtons()
+		{
+			if(constraints == Constraints.EditObject)
+			{
+				ToggleButton.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				ToggleButton.Visibility = Visibility.Hidden;
+			}
 		}
 
 		private void SubDivButton_Click(object sender, RoutedEventArgs e)
