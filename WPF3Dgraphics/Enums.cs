@@ -15,4 +15,12 @@
 		EditObject,
 		None
 	}
+
+	public enum EditMode
+	{
+		Vertex,
+		Edge,
+		Polygon,
+		Object
+	}
 }

@@ -37,6 +37,9 @@ namespace WPF3Dgraphics
 		List<TextBlock> textBlocks = new List<TextBlock>();
 		Angle angle = Angle.AngleX;
 		Constraints constraints = Constraints.Position;
+		EditMode editMode = EditMode.Vertex;
+
+
 		Int32[] indices2;
 		List<string> faces = new List<string>();
 		double rotationCubeX, rotationCubeY, rotationCubeZ = 0;
@@ -61,7 +64,6 @@ namespace WPF3Dgraphics
 		public MainWindow()
 		{
 			InitializeComponent();
-			
 		}
 
 		private void Window_Loaded(object sender,
@@ -532,6 +534,21 @@ namespace WPF3Dgraphics
 		}
 
 		private void Canvas1_KeyDown(object sender, KeyEventArgs e)
+		{
+
+		}
+
+		private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+		{
+			ToggleButton.Background = Brushes.White;
+		}
+
+		private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+		{
+			ToggleButton.Background = Brushes.Yellow;
+		}
+
+		private void ToggleButton_MouseMove(object sender, MouseEventArgs e)
 		{
 
 		}
