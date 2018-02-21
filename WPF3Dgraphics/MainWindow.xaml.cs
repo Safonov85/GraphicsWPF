@@ -56,6 +56,7 @@ namespace WPF3Dgraphics
 		Wireframe wireframe = new Wireframe();
 		MoveObject moveObject = new MoveObject();
 		Vertex vertex = new Vertex();
+		RotationObject rotationObject = new RotationObject();
 
 		public int CurrentObjectSelected { get; set; }
 
@@ -182,7 +183,8 @@ namespace WPF3Dgraphics
 					// X angle
 					if (angle == Angle.AngleX)
 					{
-						RotateObject(Angle.AngleX);
+						//RotateObject(Angle.AngleX);
+						rotationObject.RotateObject(Angle.AngleX, Canvas1, modelsInScene[CurrentObjectSelected], rotationCubeX, lastPosX);
 					}
 					// Y angle
 					else if (angle == Angle.AngleY)
@@ -622,32 +624,6 @@ namespace WPF3Dgraphics
 
 			Debug.WriteLine(Cube2.Transform.Value.OffsetX);
 		}
-
-		// Moving the WHOLE object, (Only x Position ATM)
-		void MoveObject()
-		{
-			TranslateTransform3D newPosition;
-			Point point = Mouse.GetPosition(Canvas1);
-			newPosition = new TranslateTransform3D(Cube2.Transform.Value.OffsetX + ((point.X - lastPosX) * 0.0001), 0, 0);
-			
-			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
-			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
-			myAxisAngleRotation3d.Angle = rotationCubeX;
-			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
-
-			Transform3DGroup myTransform3DGroup = new Transform3DGroup();
-
-			// Adding current rotation
-			myTransform3DGroup.Children.Add(myRotateTransform3D);
-
-			// Adding current position
-			myTransform3DGroup.Children.Add(newPosition);
-
-			Cube2.Transform = myTransform3DGroup;
-		}
-
-		
 
 		// Just for fun/test
 		void RotateCubeAnimation()

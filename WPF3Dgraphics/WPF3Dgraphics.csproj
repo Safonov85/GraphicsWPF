@@ -60,6 +60,9 @@
     </ApplicationDefinition>
     <Compile Include="Enums.cs" />
     <Compile Include="MoveObject.cs" />
+    <Compile Include="PositionObject.cs" />
+    <Compile Include="RotationObject.cs" />
+    <Compile Include="ScaleObject.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="Wireframe.cs" />
     <Page Include="MainWindow.xaml">
