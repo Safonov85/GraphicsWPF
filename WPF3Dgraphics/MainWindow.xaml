@@ -37,8 +37,11 @@
         <Button x:Name="SaveModelButton" Margin="10,609,591,22" Click="SaveModelButton_Click" Content="Save Model..."/>
 
         <Button x:Name="SubDivButton" Margin="614,114,10,541" Click="SubDivButton_Click" Content="Sub-Div"/>
-        <ToggleButton x:Name="ToggleButton" Margin="614,166,10,489" Content="Tog" Unchecked="ToggleButton_Unchecked" MouseMove="ToggleButton_MouseMove" Checked="ToggleButton_Checked" Background="#FFDDDDDD"
+        
+        <ToggleButton x:Name="ToggleButton" Margin="614,166,10,489" Content="Tog"
+         Unchecked="ToggleButton_Unchecked" MouseMove="ToggleButton_MouseMove"
+         Checked="ToggleButton_Checked" Background="#FFDDDDDD" 
                       />
-
+        
     </Grid>
 </Window>
